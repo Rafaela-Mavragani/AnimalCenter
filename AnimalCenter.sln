@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36203.30 d17.14
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AnimalCenterAPI", "AnimalCenterAPI\AnimalCenterAPI.csproj", "{ABC89222-F965-4844-988A-09A3128B26C1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AnimalCenterApp", "AnimalCenterApp\AnimalCenterApp.csproj", "{2B0C182A-C7AB-44CF-AD44-3B5A19CD0DE6}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{ABC89222-F965-4844-988A-09A3128B26C1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ABC89222-F965-4844-988A-09A3128B26C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ABC89222-F965-4844-988A-09A3128B26C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ABC89222-F965-4844-988A-09A3128B26C1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2B0C182A-C7AB-44CF-AD44-3B5A19CD0DE6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2B0C182A-C7AB-44CF-AD44-3B5A19CD0DE6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2B0C182A-C7AB-44CF-AD44-3B5A19CD0DE6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2B0C182A-C7AB-44CF-AD44-3B5A19CD0DE6}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {5FB3F3A7-2B4B-4411-91EF-846BF076D780}
+	EndGlobalSection
+EndGlobal

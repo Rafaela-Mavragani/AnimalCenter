@@ -1,0 +1,6 @@
+@AnimalCenterAPI_HostAddress = http://localhost:5209
+
+GET {{AnimalCenterAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
