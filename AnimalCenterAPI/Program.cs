@@ -1,3 +1,5 @@
+using Microsoft.EntityFrameworkCore;
+
 namespace AnimalCenterAPI
 {
     public class Program
@@ -8,9 +10,13 @@ namespace AnimalCenterAPI
 
             // Add services to the container.
 
+            var connString = builder.Configuration.GetConnectionString("DefaultConnection");
+            //builder.Services.AddDbContext<AnimalCanterDB>(options => options.UseSqlServer(connString));
+
             builder.Services.AddControllers();
             builder.Services.AddSwaggerGen();
 
+        
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
