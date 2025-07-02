@@ -1,3 +1,7 @@
+using AnimalCenterAPI.Data;
+using AnimalCenterAPI.Repository;
+using AnimalCenterAPI.Services.Implimentations;
+using AnimalCenterAPI.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace AnimalCenterAPI
@@ -11,11 +15,17 @@ namespace AnimalCenterAPI
             // Add services to the container.
 
             var connString = builder.Configuration.GetConnectionString("DefaultConnection");
-            //builder.Services.AddDbContext<AnimalCanterDB>(options => options.UseSqlServer(connString));
+
+            builder.Services.AddDbContext<AnimalAppDbContext>(options =>
+                options.UseSqlServer(connString));
+
+            // Depedency Injection
+            builder.Services.AddScoped<IAnimalRepository, AnimalRepository>();
+
+            builder.Services.AddScoped<IAnimalService, AnimalService>();
 
             builder.Services.AddControllers();
             builder.Services.AddSwaggerGen();
-
         
             var app = builder.Build();
 
