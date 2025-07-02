@@ -2,16 +2,8 @@
 
 namespace AnimalCenterAPI.Data
 {
-    public class AnimalAppDbContext : DbContext
+    public class AnimalAppDbContext(DbContextOptions options) : DbContext(options)
     {
-        public AnimalAppDbContext(DbContextOptions options) : base(options)
-        {
-        }
-
-        protected AnimalAppDbContext()
-        {
-        }
-
         public DbSet<User> Users { get; set; }
         public DbSet<AppTask> AppTasks { get; set; }
         public DbSet<Animal> Animals { get; set; }

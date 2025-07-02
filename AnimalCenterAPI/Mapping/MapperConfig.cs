@@ -4,9 +4,10 @@ namespace AnimalCenterAPI.Mapping
 {
     public class MapperConfig : Profile
     {
-        public MapperConfig() {
+        public MapperConfig() 
+        {
         
        
-                }  
+        }  
     }
 }
