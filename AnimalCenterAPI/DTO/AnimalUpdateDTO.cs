@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace AnimalCenterApp.DTO
+namespace AnimalCenterAPI.DTO
 {
     public class AnimalUpdateDTO
     {

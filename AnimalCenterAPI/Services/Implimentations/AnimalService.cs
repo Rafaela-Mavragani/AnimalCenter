@@ -10,7 +10,7 @@ namespace AnimalCenterAPI.Services.Implimentations
     {
         readonly AnimalAppDbContext _context = context;
 
-        public async Task<Animal> CreateNewAnimal(Animal animal)
+        public async Task<Animal> CreateNewAnimalAsync(Animal animal)
         {
             _context.Animals.Add(animal);
             await _context.SaveChangesAsync();

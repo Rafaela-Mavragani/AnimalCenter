@@ -1,4 +1,4 @@
-﻿namespace AnimalCenterApp.DTO
+﻿namespace AnimalCenterAPI.DTO
 {
     public class AnimalReadOnlyDTO
     {

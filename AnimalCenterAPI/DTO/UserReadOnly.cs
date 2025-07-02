@@ -1,6 +1,6 @@
 ﻿using AnimalCenterAPI.Enums;
 
-namespace AnimalCenterApp.DTO
+namespace AnimalCenterAPI.DTO
 {
     public class UserReadOnlyDTO
     {

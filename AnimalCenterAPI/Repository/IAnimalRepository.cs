@@ -5,6 +5,6 @@ namespace AnimalCenterAPI.Repository
 {
     public interface IAnimalRepository
     {
-        Animal AnimalMapToDTO(AnimalDTO animalDto);
+        Animal AnimalMappper(AnimalDTO animalDto);
     }
 }

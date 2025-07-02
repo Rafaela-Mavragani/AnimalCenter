@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
 
-namespace AnimalCenterApp.DTO
+namespace AnimalCenterAPI.DTO
 {
   public class UserDTO
     // This class is used to transfer user data between the application and the API
@@ -12,8 +12,12 @@ namespace AnimalCenterApp.DTO
 
     [StringLength(50, MinimumLength = 2, ErrorMessage = "Username should be between 2 and 50 characters.")]
      public string? UserName { get; set; }
+    [StringLength(50, MinimumLength = 2, ErrorMessage = "Firstname should be between 2 and 50 characters.")]
+     public string? firstname { get; set; }
+     [StringLength(50, MinimumLength = 2, ErrorMessage = "Lastname should be between 2 and 50 characters.")]
+      public string? lastname { get; set; }
 
-    [StringLength(50, ErrorMessage = "Email should not exceed 100 characters.")]
+        [StringLength(50, ErrorMessage = "Email should not exceed 100 characters.")]
     [EmailAddress(ErrorMessage = "Invalid email address.")]
      public string? Email { get; set; } 
 

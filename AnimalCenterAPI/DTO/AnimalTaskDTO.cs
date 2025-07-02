@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
 
-namespace AnimalCenterApp.DTO
+namespace AnimalCenterAPI.DTO
 {
     public class AnimalTaskDTO
     {

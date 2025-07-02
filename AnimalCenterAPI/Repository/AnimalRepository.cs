@@ -5,7 +5,7 @@ namespace AnimalCenterAPI.Repository
 {
     public class AnimalRepository : IAnimalRepository
     {
-        public Animal AnimalMapToDTO(AnimalDTO animalDto)
+        public Animal AnimalMappper(AnimalDTO animalDto)
         {
             return new Animal
             {

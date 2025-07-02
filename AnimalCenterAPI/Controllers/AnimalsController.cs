@@ -72,7 +72,7 @@ namespace AnimalCenterAPI.Controllers
         [HttpPost]
         public async Task<ActionResult<AnimalDTO>> PostAnimal(AnimalDTO animalDto)
         {
-            Animal animal = await _animalService.CreateNewAnimal(_animalRepository.AnimalMapToDTO(animalDto));
+            Animal animal = await _animalService.CreateNewAnimalAsync(_animalRepository.AnimalMappper(animalDto));
 
             return CreatedAtAction("GetAnimal", new { id = animal.Id }, animal);
         }
