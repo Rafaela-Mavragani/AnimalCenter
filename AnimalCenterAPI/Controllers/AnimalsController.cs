@@ -10,12 +10,13 @@ namespace AnimalCenterAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AnimalsController(AnimalAppDbContext context, IAnimalRepository animalRepository, IAnimalService animalService ,IAnimalDelete animalDelete) : ControllerBase
+    public class AnimalsController(AnimalAppDbContext context, IAnimalRepository animalRepository, IAnimalService animalService ,IAnimalDelete animalDelete , IGetAnimalByIdSer getAnimalByIdSer) : ControllerBase
     {
         private readonly AnimalAppDbContext _context = context;
         private readonly IAnimalRepository _animalRepository = animalRepository;
         private readonly IAnimalService _animalService = animalService;
         private readonly IAnimalDelete _animalDelete = animalDelete;
+        private readonly IGetAnimalByIdSer _getAnimalByIdSer = getAnimalByIdSer;
 
         // GET: api/Animals
         [HttpGet]
@@ -28,14 +29,12 @@ namespace AnimalCenterAPI.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Animal>> GetAnimal(int id)
         {
-            var animal = await _context.Animals.FindAsync(id);
+            var animalDto = await _getAnimalByIdSer.GetAnimalByIdAsync(id);
 
-            if (animal == null)
-            {
+            if (animalDto == null)
                 return NotFound();
-            }
 
-            return animal;
+            return Ok(animalDto);
         }
 
         // PUT: api/Animals/5
