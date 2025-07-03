@@ -2,18 +2,20 @@
 using Microsoft.EntityFrameworkCore;
 using AnimalCenterAPI.Data;
 using AnimalCenterAPI.DTO;
-using AnimalCenterAPI.Repository;
 using AnimalCenterAPI.Services.Interfaces;
+using AnimalCenterAPI.Repository.Interfaces;
+using AnimalCenterAPI.Services.Implimentations;
 
 namespace AnimalCenterAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AnimalsController(AnimalAppDbContext context, IAnimalRepository animalRepository, IAnimalService animalService) : ControllerBase
+    public class AnimalsController(AnimalAppDbContext context, IAnimalRepository animalRepository, IAnimalService animalService ,IAnimalDelete animalDelete) : ControllerBase
     {
         private readonly AnimalAppDbContext _context = context;
         private readonly IAnimalRepository _animalRepository = animalRepository;
         private readonly IAnimalService _animalService = animalService;
+        private readonly IAnimalDelete _animalDelete = animalDelete;
 
         // GET: api/Animals
         [HttpGet]
@@ -81,14 +83,10 @@ namespace AnimalCenterAPI.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteAnimal(int id)
         {
-            var animal = await _context.Animals.FindAsync(id);
-            if (animal == null)
-            {
-                return NotFound();
-            }
+            var deleted = await _animalDelete.DeleteAsync(id);
 
-            _context.Animals.Remove(animal);
-            await _context.SaveChangesAsync();
+            if (!deleted)
+                return NotFound();
 
             return NoContent();
         }

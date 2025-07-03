@@ -1,5 +1,6 @@
 using AnimalCenterAPI.Data;
-using AnimalCenterAPI.Repository;
+using AnimalCenterAPI.Repository.Implimentations;
+using AnimalCenterAPI.Repository.Interfaces;
 using AnimalCenterAPI.Services.Implimentations;
 using AnimalCenterAPI.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -23,6 +24,9 @@ namespace AnimalCenterAPI
             builder.Services.AddScoped<IAnimalRepository, AnimalRepository>();
 
             builder.Services.AddScoped<IAnimalService, AnimalService>();
+
+            builder.Services.AddScoped<IAnimalDelete, AnimalDelete>();
+            builder.Services.AddScoped<IAnimalDeleteRepo, AnimalDeleteRepo>();
 
             builder.Services.AddControllers();
             builder.Services.AddSwaggerGen();

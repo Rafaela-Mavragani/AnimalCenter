@@ -1,7 +1,8 @@
 ﻿using AnimalCenterAPI.Data;
 using AnimalCenterAPI.DTO;
+using AnimalCenterAPI.Repository.Interfaces;
 
-namespace AnimalCenterAPI.Repository
+namespace AnimalCenterAPI.Repository.Implimentations
 {
     public class AnimalRepository : IAnimalRepository
     {
