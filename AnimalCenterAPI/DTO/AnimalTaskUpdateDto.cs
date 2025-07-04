@@ -7,13 +7,8 @@ namespace AnimalCenterAPI.DTO
     {
         public bool IsCompleted { get; set; }
 
-        [Required]
-        [NotNull]
         public int AnimalId { get; set; }
 
-
-        [Required]
-        [NotNull]
         public int AppTaskId { get; set; }
     }
 }

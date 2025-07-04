@@ -38,6 +38,20 @@ namespace AnimalCenterAPI
             builder.Services.AddScoped<IAppTaskService, AppTaskService>();
             builder.Services.AddScoped<IAppTaskRepository, AppTaskRepository>();
 
+            builder.Services.AddScoped<IGetAppTaskByIdSer, GetAppTaskByIdSer>();
+
+            builder.Services.AddScoped<IAnimalToUpdateSer ,AnimalToUpdateSer>();
+
+            builder.Services.AddScoped<IAppTaskToUpdateSer, AppTaskToUpdateSer>();
+
+            builder.Services.AddScoped<IAnimalTaskRepository ,AnimalTaskRepository>();
+            builder.Services.AddScoped<IAnimalTaskService, AnimalTaskService>();
+
+            builder.Services.AddScoped<IGetAnimalTaskByIdSer, GetAnimalTaskByIdSer>();
+
+            builder.Services.AddScoped<IAnimalTaskToUpdate, AnimalTaskToUpdate>();
+
+
             builder.Services.AddControllers();
             builder.Services.AddSwaggerGen();
         

@@ -4,6 +4,7 @@ using AnimalCenterAPI.Repository.Implimentations;
 using AnimalCenterAPI.Repository.Interfaces;
 using AnimalCenterAPI.Services.Implimentations;
 using AnimalCenterAPI.Services.Interfaces;
+using Humanizer;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -16,11 +17,13 @@ namespace AnimalCenterAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AppTasksController(AnimalAppDbContext context, IAppTaskRepository appTaskRepository, IAppTaskService appTaskService): ControllerBase
+    public class AppTasksController(AnimalAppDbContext context, IAppTaskRepository appTaskRepository, IAppTaskService appTaskService , IGetAppTaskByIdSer getAppTaskByIdSer , IAppTaskToUpdateSer appTaskToUpdateSer): ControllerBase
     {
         private readonly AnimalAppDbContext _context = context;
         private readonly IAppTaskRepository _appTaskRepository = appTaskRepository;
         private readonly IAppTaskService _appTaskService = appTaskService;  
+        private readonly IGetAppTaskByIdSer _getAppTaskByIdSer = getAppTaskByIdSer;
+        private readonly IAppTaskToUpdateSer _appTaskUpdateService = appTaskToUpdateSer;
 
 
 
@@ -35,43 +38,24 @@ namespace AnimalCenterAPI.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<AppTask>> GetAppTask(int id)
         {
-            var appTask = await _context.AppTasks.FindAsync(id);
+            var appTaskDto = await _getAppTaskByIdSer.GetAppTaskByIdAsync(id);
 
-            if (appTask == null)
+            if (appTaskDto == null)
             {
                 return NotFound();
             }
 
-            return appTask;
+            return Ok(appTaskDto);
         }
 
         // PUT: api/AppTasks/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutAppTask(int id, AppTask appTask)
-        {
-            if (id != appTask.Id)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(appTask).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!AppTaskExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+        public async Task<IActionResult> PutAppTask(int id, AppTaskUpdateDTO dto)
+        { 
+            var updated = await _appTaskUpdateService.UpdateAppTaskAsync(id, dto);
+            if (!updated)
+               return NotFound();
 
             return NoContent();
         }

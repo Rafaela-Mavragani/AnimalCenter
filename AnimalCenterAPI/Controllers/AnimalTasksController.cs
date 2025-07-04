@@ -1,24 +1,31 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using AnimalCenterAPI.Data;
+using AnimalCenterAPI.DTO;
+using AnimalCenterAPI.Repository.Implimentations;
+using AnimalCenterAPI.Repository.Interfaces;
+using AnimalCenterAPI.Services.Implimentations;
+using AnimalCenterAPI.Services.Interfaces;
+using Humanizer;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using AnimalCenterAPI.Data;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace AnimalCenterAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AnimalTasksController : ControllerBase
+    public class AnimalTasksController(IAnimalTaskRepository animalTaskRepository , IAnimalTaskService animalTaskService , AnimalAppDbContext context, IGetAnimalTaskByIdSer getAnimalTaskByIdSer , IAnimalTaskToUpdate animalTaskToUpdate) : ControllerBase
     {
-        private readonly AnimalAppDbContext _context;
+        readonly AnimalAppDbContext _context = context ;
+        readonly IAnimalTaskRepository _animalTaskRepository = animalTaskRepository;    
+        readonly IAnimalTaskService _animalTaskService = animalTaskService;
+        readonly IGetAnimalTaskByIdSer _getAnimalTaskByIdSer = getAnimalTaskByIdSer;
+        readonly IAnimalTaskToUpdate _animalTaskUpdateService = animalTaskToUpdate;
 
-        public AnimalTasksController(AnimalAppDbContext context)
-        {
-            _context = context;
-        }
+
 
         // GET: api/AnimalTasks
         [HttpGet]
@@ -31,73 +38,41 @@ namespace AnimalCenterAPI.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<AnimalTask>> GetAnimalTask(int id)
         {
-            var animalTask = await _context.AnimalTasks.FindAsync(id);
+            var animalTaskDto = await _getAnimalTaskByIdSer.GetAnimalTaskByIdAsync(id);
 
-            if (animalTask == null)
+            if (animalTaskDto == null)
             {
                 return NotFound();
             }
 
-            return animalTask;
+            return Ok(animalTaskDto);
         }
 
         // PUT: api/AnimalTasks/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutAnimalTask(int id, AnimalTask animalTask)
+        public async Task<IActionResult> PutAnimalTask(int id, AnimalTaskUpdateDto dto)
         {
-            if (id != animalTask.Id)
-            {
-                return BadRequest();
-            }
+        
+            var updated = await _animalTaskUpdateService.UpdateAnimalTaskAsync(id, dto);
+            //var appTaskExists = await _context.AppTasks.AnyAsync(x => x.Id == dto.AppTaskId);
+            //var animalExists = await _context.Animals.AnyAsync(x => x.Id == dto.AnimalId);
+            //if (!appTaskExists || !animalExists)
 
-            _context.Entry(animalTask).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!AnimalTaskExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+                if (!updated)
+                return NotFound();
 
             return NoContent();
         }
 
-        // POST: api/AnimalTasks
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        // Fix the type name in the method signature
         [HttpPost]
-        public async Task<ActionResult<AnimalTask>> PostAnimalTask(AnimalTask animalTask)
+        public async Task<ActionResult<AnimalTask>> PostAnimalTask(AnimalTaskDTO AnimalTaskDTO) 
         {
-            _context.AnimalTasks.Add(animalTask);
-            await _context.SaveChangesAsync();
+            AnimalTask animalTask = await _animalTaskService.CreateNewAnimalTaskAsync(_animalTaskRepository.AnimalTaskMappper(AnimalTaskDTO));
 
             return CreatedAtAction("GetAnimalTask", new { id = animalTask.Id }, animalTask);
         }
 
-        // DELETE: api/AnimalTasks/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteAnimalTask(int id)
-        {
-            var animalTask = await _context.AnimalTasks.FindAsync(id);
-            if (animalTask == null)
-            {
-                return NotFound();
-            }
-
-            _context.AnimalTasks.Remove(animalTask);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
-        }
 
         private bool AnimalTaskExists(int id)
         {

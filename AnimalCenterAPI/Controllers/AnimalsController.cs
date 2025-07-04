@@ -1,22 +1,25 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using AnimalCenterAPI.Data;
+﻿using AnimalCenterAPI.Data;
 using AnimalCenterAPI.DTO;
-using AnimalCenterAPI.Services.Interfaces;
 using AnimalCenterAPI.Repository.Interfaces;
 using AnimalCenterAPI.Services.Implimentations;
+using AnimalCenterAPI.Services.Interfaces;
+using Humanizer;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace AnimalCenterAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AnimalsController(AnimalAppDbContext context, IAnimalRepository animalRepository, IAnimalService animalService ,IAnimalDelete animalDelete , IGetAnimalByIdSer getAnimalByIdSer) : ControllerBase
+    public class AnimalsController(AnimalAppDbContext context,IAnimalService animalService ,IAnimalDelete animalDelete , IGetAnimalByIdSer getAnimalByIdSer, IAnimalToUpdateSer animalToUpdateSer, IAnimalRepository animalRepository) : ControllerBase
     {
         private readonly AnimalAppDbContext _context = context;
-        private readonly IAnimalRepository _animalRepository = animalRepository;
+    
         private readonly IAnimalService _animalService = animalService;
         private readonly IAnimalDelete _animalDelete = animalDelete;
         private readonly IGetAnimalByIdSer _getAnimalByIdSer = getAnimalByIdSer;
+        private readonly IAnimalToUpdateSer _animalToUpdateSer = animalToUpdateSer;
+        private readonly IAnimalRepository _animalRepository = animalRepository;
 
         // GET: api/Animals
         [HttpGet]
@@ -40,37 +43,19 @@ namespace AnimalCenterAPI.Controllers
         // PUT: api/Animals/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutAnimal(int id, Animal animal)
+        public async Task<IActionResult> PutAnimal(int id, AnimalUpdateDTO dto)
         {
-            if (id != animal.Id)
-            {
-                return BadRequest();
-            }
+            var success = await _animalToUpdateSer.UpdateAnimalAsync(id, dto);
 
-            _context.Entry(animal).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!AnimalExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+            if (!success)
+                return NotFound();
 
             return NoContent();
         }
 
-        // POST: api/Animals
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
+            // POST: api/Animals
+            // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+            [HttpPost]
         public async Task<ActionResult<AnimalDTO>> PostAnimal(AnimalDTO animalDto)
         {
             Animal animal = await _animalService.CreateNewAnimalAsync(_animalRepository.AnimalMappper(animalDto));
