@@ -1,5 +1,6 @@
 ﻿using AnimalCenterAPI.Data;
 using AnimalCenterAPI.DTO;
+using AnimalCenterAPI.Exceptions;
 using AnimalCenterAPI.Repository.Interfaces;
 using AnimalCenterAPI.Services.Implimentations;
 using AnimalCenterAPI.Services.Interfaces;
@@ -34,10 +35,9 @@ namespace AnimalCenterAPI.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<User>> GetUser(int id)
         {
-            var UserDto = await _getUserByIdSer.GetUserByIdAsync(id);
+            var UserDto = await _getUserByIdSer.GetUserByIdAsync(id) ?? throw new EntityNotFoundException("User", $"with ID: {id}");
 
-            if (UserDto == null)
-                return NotFound();
+           
 
             return Ok(UserDto);
         }
@@ -46,6 +46,12 @@ namespace AnimalCenterAPI.Controllers
         [HttpPost]
         public async Task<ActionResult<UserDTO>> PostUser(UserDTO userDTO)
         {
+            bool exists = await _context.Users.AnyAsync(x => x.Id == userDTO.Id);
+
+            if (exists)
+            {
+                throw new EntityAlreadyExistsException("User", $"with Id: {userDTO.Id}");
+            }
             User user = await _userService.CreateNewUserAsync(_userRepository.UserMappper(userDTO));
 
             return CreatedAtAction("GetUser", new { id = user.Id }, user);

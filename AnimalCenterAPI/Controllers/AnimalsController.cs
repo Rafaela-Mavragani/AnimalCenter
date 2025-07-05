@@ -1,5 +1,6 @@
 ﻿using AnimalCenterAPI.Data;
 using AnimalCenterAPI.DTO;
+using AnimalCenterAPI.Exceptions;
 using AnimalCenterAPI.Repository.Interfaces;
 using AnimalCenterAPI.Services.Implimentations;
 using AnimalCenterAPI.Services.Interfaces;
@@ -32,10 +33,9 @@ namespace AnimalCenterAPI.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Animal>> GetAnimal(int id)
         {
-            var animalDto = await _getAnimalByIdSer.GetAnimalByIdAsync(id);
+            var animalDto = await _getAnimalByIdSer.GetAnimalByIdAsync(id) ?? throw new EntityNotFoundException("Animal ", $"with ID: {id}");
 
-            if (animalDto == null)
-                return NotFound();
+            
 
             return Ok(animalDto);
         }
@@ -48,16 +48,22 @@ namespace AnimalCenterAPI.Controllers
             var success = await _animalToUpdateSer.UpdateAnimalAsync(id, dto);
 
             if (!success)
-                return NotFound();
+                throw new EntityNotFoundException("Animal", $"with ID: {id}");
 
             return NoContent();
         }
 
-            // POST: api/Animals
-            // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-            [HttpPost]
+       
+        [HttpPost]
         public async Task<ActionResult<AnimalDTO>> PostAnimal(AnimalDTO animalDto)
         {
+            bool exists = await _context.Animals.AnyAsync(x => x.Id == animalDto.Id); 
+
+            if (exists)
+            {
+                throw new EntityAlreadyExistsException("Animal", $"with Id: {animalDto.Id}"); 
+            }
+
             Animal animal = await _animalService.CreateNewAnimalAsync(_animalRepository.AnimalMappper(animalDto));
 
             return CreatedAtAction("GetAnimal", new { id = animal.Id }, animal);
@@ -70,7 +76,7 @@ namespace AnimalCenterAPI.Controllers
             var deleted = await _animalDelete.DeleteAsync(id);
 
             if (!deleted)
-                return NotFound();
+                throw new EntityAlreadyExistsException("Animal", $"with Id: {id}"); 
 
             return NoContent();
         }

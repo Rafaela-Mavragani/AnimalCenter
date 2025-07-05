@@ -1,5 +1,6 @@
 ﻿using AnimalCenterAPI.Data;
 using AnimalCenterAPI.DTO;
+using AnimalCenterAPI.Exceptions;
 using AnimalCenterAPI.Repository.Implimentations;
 using AnimalCenterAPI.Repository.Interfaces;
 using AnimalCenterAPI.Services.Implimentations;
@@ -38,13 +39,7 @@ namespace AnimalCenterAPI.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<AnimalTask>> GetAnimalTask(int id)
         {
-            var animalTaskDto = await _getAnimalTaskByIdSer.GetAnimalTaskByIdAsync(id);
-
-            if (animalTaskDto == null)
-            {
-                return NotFound();
-            }
-
+            var animalTaskDto = await _getAnimalTaskByIdSer.GetAnimalTaskByIdAsync(id) ?? throw new EntityNotFoundException("AnimalTask", $"with ID: {id}");
             return Ok(animalTaskDto);
         }
 
@@ -55,19 +50,25 @@ namespace AnimalCenterAPI.Controllers
         
             var updated = await _animalTaskUpdateService.UpdateAnimalTaskAsync(id, dto);
             //var appTaskExists = await _context.AppTasks.AnyAsync(x => x.Id == dto.AppTaskId);
-            //var animalExists = await _context.Animals.AnyAsync(x => x.Id == dto.AnimalId);
+            //var animalExists = await _context.Animals.AnyAsync(x => x.Id == dto.AnimalId););
             //if (!appTaskExists || !animalExists)
 
                 if (!updated)
-                return NotFound();
+                throw new EntityNotFoundException("AnimalTask", $"with ID: {id}");
 
             return NoContent();
         }
 
-        // Fix the type name in the method signature
+       
         [HttpPost]
         public async Task<ActionResult<AnimalTask>> PostAnimalTask(AnimalTaskDTO AnimalTaskDTO) 
         {
+            bool exists = await _context.AnimalTasks.AnyAsync(x => x.Id == AnimalTaskDTO.Id);
+
+            if (exists)
+            {
+                throw new EntityAlreadyExistsException("AnimalTask", $"with Id: {AnimalTaskDTO.Id}");
+            }
             AnimalTask animalTask = await _animalTaskService.CreateNewAnimalTaskAsync(_animalTaskRepository.AnimalTaskMappper(AnimalTaskDTO));
 
             return CreatedAtAction("GetAnimalTask", new { id = animalTask.Id }, animalTask);

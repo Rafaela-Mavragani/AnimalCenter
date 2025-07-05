@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AnimalCenterAPI.Exceptions; 
 
 namespace AnimalCenterAPI.Controllers
 {
@@ -38,13 +39,7 @@ namespace AnimalCenterAPI.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<AppTask>> GetAppTask(int id)
         {
-            var appTaskDto = await _getAppTaskByIdSer.GetAppTaskByIdAsync(id);
-
-            if (appTaskDto == null)
-            {
-                return NotFound();
-            }
-
+            var appTaskDto = await _getAppTaskByIdSer.GetAppTaskByIdAsync(id) ?? throw new EntityNotFoundException("AppTask", $"with ID: {id}");
             return Ok(appTaskDto);
         }
 
@@ -52,20 +47,29 @@ namespace AnimalCenterAPI.Controllers
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
         public async Task<IActionResult> PutAppTask(int id, AppTaskUpdateDTO dto)
-        { 
+        {
             var updated = await _appTaskUpdateService.UpdateAppTaskAsync(id, dto);
+
             if (!updated)
-               return NotFound();
+            {
+                throw new EntityNotFoundException("AppTask", $"with ID: {id}");
+            }
 
             return NoContent();
         }
 
-      
 
-        [HttpPost]
+
+            [HttpPost]
         public async Task<ActionResult<AppTask>> PostAppTask(AppTaskDTO appTaskDTO) 
         {
-            
+            bool exists = await _context.AppTasks.AnyAsync(x => x.Name == appTaskDTO.Name);
+
+            if (exists)
+            {
+                throw new EntityAlreadyExistsException("AppTask", $"with Name: {appTaskDTO.Name}");
+            }
+
             AppTask appTask = await _appTaskService.CreateNewAppTaskAsync(_appTaskRepository.AppTaskMappper(appTaskDTO));
 
             
