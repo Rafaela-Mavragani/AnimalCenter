@@ -12,12 +12,11 @@ namespace AnimalCenterAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AnimalsController(AnimalAppDbContext context,IAnimalService animalService ,IAnimalDelete animalDelete , IGetAnimalByIdSer getAnimalByIdSer, IAnimalToUpdateSer animalToUpdateSer, IAnimalRepository animalRepository) : ControllerBase
+    public class AnimalsController(AnimalAppDbContext context,IAnimalService animalService , IGetAnimalByIdSer getAnimalByIdSer, IAnimalToUpdateSer animalToUpdateSer, IAnimalRepository animalRepository) : ControllerBase
     {
         private readonly AnimalAppDbContext _context = context;
     
         private readonly IAnimalService _animalService = animalService;
-        private readonly IAnimalDelete _animalDelete = animalDelete;
         private readonly IGetAnimalByIdSer _getAnimalByIdSer = getAnimalByIdSer;
         private readonly IAnimalToUpdateSer _animalToUpdateSer = animalToUpdateSer;
         private readonly IAnimalRepository _animalRepository = animalRepository;
@@ -73,7 +72,7 @@ namespace AnimalCenterAPI.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteAnimal(int id)
         {
-            var deleted = await _animalDelete.DeleteAsync(id);
+            var deleted = await _animalService.DeleteAsync(id);
 
             if (!deleted)
                 throw new EntityAlreadyExistsException("Animal", $"with Id: {id}"); 

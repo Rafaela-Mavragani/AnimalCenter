@@ -7,5 +7,6 @@ namespace AnimalCenterAPI.Services.Interfaces
     public interface IAnimalService
     {
         Task<Animal> CreateNewAnimalAsync(Animal animal);
+        Task<bool> DeleteAsync(int id);
     }
 }

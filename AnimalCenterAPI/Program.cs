@@ -24,7 +24,6 @@ namespace AnimalCenterAPI
             builder.Services.AddScoped<IAnimalRepository, AnimalRepository>();
             builder.Services.AddScoped<IAnimalService, AnimalService>();
 
-            builder.Services.AddScoped<IAnimalDelete, AnimalDelete>();
             builder.Services.AddScoped<IAnimalDeleteRepo, AnimalDeleteRepo>();
 
             builder.Services.AddScoped<IGetAnimalByIdSer, GetAnimalByIdSer>();

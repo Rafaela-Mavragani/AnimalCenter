@@ -16,5 +16,15 @@ namespace AnimalCenterAPI.Services.Implimentations
             await _context.SaveChangesAsync();
             return animal;
         }
+
+        public async Task<bool> DeleteAsync(int id)
+        {
+            var animal = await _context.Animals.FindAsync(id);
+            if (animal == null) return false;
+
+            _context.Animals.Remove(animal);
+            await _context.SaveChangesAsync();
+            return true;
+        }
     }
 }
