@@ -1,6 +1,4 @@
-using AnimalCenterAPI.Data;
 using AnimalCenterApp.Components;
-using AnimalCenterApp.Components.Account;
 using AnimalCenterApp.Data;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -19,9 +17,6 @@ namespace AnimalCenterApp
                 .AddInteractiveServerComponents();
 
             builder.Services.AddCascadingAuthenticationState();
-            builder.Services.AddScoped<IdentityUserAccessor>();
-            builder.Services.AddScoped<IdentityRedirectManager>();
-            builder.Services.AddScoped<AuthenticationStateProvider, IdentityRevalidatingAuthenticationStateProvider>();
 
             builder.Services.AddAuthentication(options =>
                 {
@@ -39,8 +34,6 @@ namespace AnimalCenterApp
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddSignInManager()
                 .AddDefaultTokenProviders();
-
-            builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSender>();
 
             builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("https://localhost:7212/") });
 
@@ -74,9 +67,6 @@ namespace AnimalCenterApp
 
             app.MapRazorComponents<App>()
                 .AddInteractiveServerRenderMode();
-
-            // Add additional endpoints required by the Identity /Account Razor components.
-            app.MapAdditionalIdentityEndpoints();
 
             app.Run();
         }

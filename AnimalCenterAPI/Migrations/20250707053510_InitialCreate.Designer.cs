@@ -4,6 +4,7 @@ using AnimalCenterAPI.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AnimalCenterAPI.Migrations
 {
     [DbContext(typeof(AnimalAppDbContext))]
-    partial class AnimalAppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250707053510_InitialCreate")]
+    partial class InitialCreate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -203,7 +206,7 @@ namespace AnimalCenterAPI.Migrations
                             Name = "Admin",
                             Password = "12345Aa!",
                             UserName = "admin",
-                            UserRole = "Admin",
+                            UserRole = "volnteer",
                             lastname = "User"
                         });
                 });

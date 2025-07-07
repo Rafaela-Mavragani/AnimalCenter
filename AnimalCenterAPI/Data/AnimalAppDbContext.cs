@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using AnimalCenterAPI.Enums;
+using Microsoft.EntityFrameworkCore;
 
 namespace AnimalCenterAPI.Data
 {
@@ -46,8 +47,6 @@ namespace AnimalCenterAPI.Data
                        
             });
 
-       
-
             modelBuilder.Entity<AppTask>(entity =>
             {
                 entity.ToTable("AppTasks");
@@ -79,7 +78,21 @@ namespace AnimalCenterAPI.Data
                       .OnDelete(DeleteBehavior.Cascade);
 
             });
+
+            modelBuilder.Entity<User>().HasData(new User
+            {
+                Id = 1,
+                Name = "Admin",
+                lastname = "User",
+                UserName = "admin",
+                Email = "admin@example.com",
+                Password = "12345Aa!", 
+                UserRole = (UserRole)1,
+                InsertedAt = new DateTime(2025, 01, 01, 0, 0, 0, DateTimeKind.Utc),
+                UpdatedAt = null
+            });
         }
     }
   
 }
+

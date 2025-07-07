@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AnimalCenterAPI.Migrations
 {
     [DbContext(typeof(AnimalAppDbContext))]
-    [Migration("20250702115514_FixedTables")]
-    partial class FixedTables
+    [Migration("20250707052501_fixes")]
+    partial class fixes
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -196,6 +196,19 @@ namespace AnimalCenterAPI.Migrations
                         .IsUnique();
 
                     b.ToTable("Users", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Email = "admin@example.com",
+                            InsertedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Name = "Admin",
+                            Password = "12345Aa!",
+                            UserName = "admin",
+                            UserRole = "volnteer",
+                            lastname = "User"
+                        });
                 });
 
             modelBuilder.Entity("AnimalCenterAPI.Data.AnimalTask", b =>

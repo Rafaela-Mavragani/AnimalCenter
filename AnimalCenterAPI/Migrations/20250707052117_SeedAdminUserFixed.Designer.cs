@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AnimalCenterAPI.Migrations
 {
     [DbContext(typeof(AnimalAppDbContext))]
-    [Migration("20250702074154_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20250707052117_SeedAdminUserFixed")]
+    partial class SeedAdminUserFixed
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -167,6 +167,9 @@ namespace AnimalCenterAPI.Migrations
                         .HasColumnType("datetime2")
                         .HasDefaultValueSql("GETDATE()");
 
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Password")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -184,63 +187,28 @@ namespace AnimalCenterAPI.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("lastname")
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("Id");
 
                     b.HasIndex(new[] { "Email" }, "IX_Users_Email")
                         .IsUnique();
 
                     b.ToTable("Users", (string)null);
-                });
 
-            modelBuilder.Entity("AnimalCenterAPI.Data.Volunteer", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Age")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("FirstName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("InsertedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("GETDATE()");
-
-                    b.Property<string>("LastName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PhoneNumber")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("GETDATE()");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("UserRole")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId")
-                        .IsUnique();
-
-                    b.HasIndex(new[] { "PhoneNumber" }, "IX_Volunteers_PhoneNumber")
-                        .IsUnique()
-                        .HasFilter("[PhoneNumber] IS NOT NULL");
-
-                    b.ToTable("Volunteers", (string)null);
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Email = "admin@example.com",
+                            InsertedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Name = "Admin",
+                            Password = "12345Aa!",
+                            UserName = "admin",
+                            UserRole = "volnteer",
+                            lastname = "User"
+                        });
                 });
 
             modelBuilder.Entity("AnimalCenterAPI.Data.AnimalTask", b =>
@@ -273,17 +241,6 @@ namespace AnimalCenterAPI.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("AnimalCenterAPI.Data.Volunteer", b =>
-                {
-                    b.HasOne("AnimalCenterAPI.Data.User", "User")
-                        .WithOne("Volunteer")
-                        .HasForeignKey("AnimalCenterAPI.Data.Volunteer", "UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("AnimalCenterAPI.Data.Animal", b =>
                 {
                     b.Navigation("AnimalTasks");
@@ -298,8 +255,6 @@ namespace AnimalCenterAPI.Migrations
             modelBuilder.Entity("AnimalCenterAPI.Data.User", b =>
                 {
                     b.Navigation("AppTasks");
-
-                    b.Navigation("Volunteer");
                 });
 #pragma warning restore 612, 618
         }

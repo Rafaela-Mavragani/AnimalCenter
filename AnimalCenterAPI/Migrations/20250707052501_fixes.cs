@@ -5,7 +5,7 @@
 namespace AnimalCenterAPI.Migrations
 {
     /// <inheritdoc />
-    public partial class UpdatedAnimalTaskNavigationProperty : Migration
+    public partial class fixes : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

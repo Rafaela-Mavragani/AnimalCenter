@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace AnimalCenterAPI.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class SeedAdminUserFixed : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -37,6 +37,8 @@ namespace AnimalCenterAPI.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    lastname = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     UserName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Email = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Password = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -74,32 +76,6 @@ namespace AnimalCenterAPI.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Volunteers",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    FirstName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    LastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Age = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    UserRole = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    PhoneNumber = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    UserId = table.Column<int>(type: "int", nullable: false),
-                    InsertedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETDATE()"),
-                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true, defaultValueSql: "GETDATE()")
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Volunteers", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Volunteers_Users_UserId",
-                        column: x => x.UserId,
-                        principalTable: "Users",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "AnimalTasks",
                 columns: table => new
                 {
@@ -127,6 +103,11 @@ namespace AnimalCenterAPI.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
+
+            migrationBuilder.InsertData(
+                table: "Users",
+                columns: new[] { "Id", "Email", "InsertedAt", "Name", "Password", "UserName", "UserRole", "lastname" },
+                values: new object[] { 1, "admin@example.com", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "Admin", "12345Aa!", "admin", "volnteer", "User" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Animals_Name",
@@ -161,19 +142,6 @@ namespace AnimalCenterAPI.Migrations
                 table: "Users",
                 column: "Email",
                 unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Volunteers_PhoneNumber",
-                table: "Volunteers",
-                column: "PhoneNumber",
-                unique: true,
-                filter: "[PhoneNumber] IS NOT NULL");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Volunteers_UserId",
-                table: "Volunteers",
-                column: "UserId",
-                unique: true);
         }
 
         /// <inheritdoc />
@@ -181,9 +149,6 @@ namespace AnimalCenterAPI.Migrations
         {
             migrationBuilder.DropTable(
                 name: "AnimalTasks");
-
-            migrationBuilder.DropTable(
-                name: "Volunteers");
 
             migrationBuilder.DropTable(
                 name: "Animals");

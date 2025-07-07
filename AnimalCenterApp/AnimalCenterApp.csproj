@@ -29,6 +29,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Components\Account\" />
     <Folder Include="Exceptions\" />
   </ItemGroup>
 
