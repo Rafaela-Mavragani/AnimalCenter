@@ -1,7 +1,120 @@
 ﻿@page "/"
+@rendermode InteractiveServer
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
 
-<PageTitle>Home</PageTitle>
+<h3 class="text-center text-dark mb-4">Animal Management</h3>
 
-<h1>Hello, world!</h1>
+@if (animals == null)
+{
+    <p class="text-muted text-center">Loading animals...</p>
+}
+else
+{
+    <table class="table table-bordered pastel-table">
+        <thead class="table-light">
+            <tr>
+                <th>Name</th>
+                <th>Species</th>
+                <th>Age</th>
+                <th>Gender</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var animal in animals)
+            {
+                <tr>
+                    <td>@animal.Name</td>
+                    <td>@animal.Species</td>
+                    <td>@animal.Age</td>
+                    <td>@animal.Gender</td>
+                    <td>@animal.Status</td>
+                    <td>
+                        <button class="btn btn-sm btn-outline-danger" @onclick="() => DeleteAnimal(animal.Id)">Delete </button>
+                        <button class="btn btn-sm btn-outline-danger" @onclick="() => UpdateAnimal(animal.Id)" Update>Update </button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+<br />
+<hr class="my-4" />
+<h4 class="mb-3">Add New Animal</h4>
 
-Welcome to your new app.
+<EditForm Model="newAnimal" OnValidSubmit="AddAnimal" FormName="AddAnimalForm">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <div class="row g-2">
+        <div class="col-md-4">
+            <InputText @bind-Value="newAnimal.Name" class="form-control" placeholder="Name" />
+        </div>
+        <div class="col-md-4">
+            <InputText @bind-Value="newAnimal.Species" class="form-control" placeholder="Species" />
+        </div>
+        <div class="col-md-4">
+            <InputNumber @bind-Value="newAnimal.Age" class="form-control" placeholder="Age" />
+        </div>
+        <div class="col-md-4">
+            <InputText @bind-Value="newAnimal.Gender" class="form-control" placeholder="Gender" />
+        </div>
+        <div class="col-md-4">
+            <InputText @bind-Value="newAnimal.Status" class="form-control" placeholder="Status" />
+        </div>
+        <div class="col-md-4">
+            <InputText @bind-Value="newAnimal.Description" class="form-control" placeholder="Description" />
+        </div>
+    </div>
+    <button type="submit" class="btn btn-primary mt-3">Save</button>
+</EditForm>
+
+@code {
+    private List<AnimalDTO>? animals;
+    private AnimalDTO newAnimal = new AnimalDTO();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadAnimals();
+    }
+
+    private async Task LoadAnimals()
+    {
+        animals = await Http.GetFromJsonAsync<List<AnimalDTO>>("api/animals");
+    }
+
+    private async Task AddAnimal()
+    {
+        var response = await Http.PostAsJsonAsync("api/animals", newAnimal);
+        if (response.IsSuccessStatusCode)
+        {
+            newAnimal = new AnimalDTO();
+            await LoadAnimals();
+        }
+        else
+        {
+            var error = await response.Content.ReadAsStringAsync();
+            Console.WriteLine($"❌ Error: {error}");
+        }
+    }
+
+    private async Task DeleteAnimal(int id)
+    {
+        var response = await Http.DeleteAsync($"api/animals/{id}");
+        if (response.IsSuccessStatusCode)
+        {
+            await LoadAnimals();
+        }
+        else
+        {
+            var error = await response.Content.ReadAsStringAsync();
+            Console.WriteLine($"❌ Error: {error}");
+        }
+    }
+
+    private void UpdateAnimal(int id)
+    {
+        NavigationManager.NavigateTo($"/animals/edit/{id}");
+    }
+}

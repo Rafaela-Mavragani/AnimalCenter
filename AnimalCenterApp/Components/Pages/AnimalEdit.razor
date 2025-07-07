@@ -1,0 +1,65 @@
+﻿@page "/animals/edit/{id:int}"
+@rendermode InteractiveServer
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+
+<h3>✏️ Επεξεργασία Ζώου</h3>
+
+@if (animal == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <EditForm Model="animal" OnValidSubmit="UpdateAnimal" FormName ="EdidAnimalForm">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+        <div class="mb-2">
+            <label>Name</label>
+            <InputText @bind-Value="animal.Name" class="form-control" />
+        </div>
+        <div class="mb-2">
+            <label>Specie</label>
+            <InputText @bind-Value="animal.Species" class="form-control" />
+        </div>
+        <div class="mb-2">
+            <label>Age</label>
+            <InputNumber @bind-Value="animal.Age" class="form-control" />
+        </div>
+        <div class="mb-2">
+            <label>Gendet</label>
+            <InputText @bind-Value="animal.Gender" class="form-control" />
+        </div>
+        <div class="mb-2">
+            <label>Status</label>
+            <InputText @bind-Value="animal.Status" class="form-control" />
+        </div>
+      
+        <button class="btn btn-primary">Αποθήκευση</button>
+    </EditForm>
+}
+
+@code {
+    [Parameter]
+    public int id { get; set; }
+
+    private AnimalUpdateDTO? animal;
+
+    protected override async Task OnInitializedAsync()
+    {
+        animal = await Http.GetFromJsonAsync<AnimalUpdateDTO>($"api/animals/{id}");
+    }
+
+    private async Task UpdateAnimal()
+    {
+        var response = await Http.PutAsJsonAsync($"api/animals/{id}", animal);
+        if (response.IsSuccessStatusCode)
+        {
+            NavigationManager.NavigateTo("/");
+        }
+        else
+        {
+            Console.WriteLine("❌ Error updating animal");
+        }
+    }
+}

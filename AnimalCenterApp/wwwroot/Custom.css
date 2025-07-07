@@ -1,0 +1,31 @@
+﻿namespace AnimalCenterApp.wwwroot
+.pastel-table {
+    background-color: #fdf6e3; /* pastel yellow */
+    color: #3c3c3c;
+}
+
+.pastel-table th {
+    background-color: #e3e3e3;
+}
+
+.pastel-table tr:hover {
+    background-color: #f7f7d4;
+    transition: 0.2s;
+}
+
+input.form-control, textarea.form-control {
+    background-color: #fffef7;
+    border: 1px solid #ddd;
+    color: #333;
+}
+
+button.btn-primary {
+    background-color: #ffc107;
+    border-color: #ffc107;
+    color: black;
+}
+
+    button.btn-primary:hover {
+        background-color: #e0a800;
+        border-color: #d39e00;
+    }

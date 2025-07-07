@@ -30,9 +30,6 @@ namespace AnimalCenterAPI
             builder.Services.AddScoped<IAppTaskService, AppTaskService>();
             builder.Services.AddScoped<IAppTaskRepository, AppTaskRepository>();
 
-
-            builder.Services.AddScoped<IAnimalToUpdateSer ,AnimalToUpdateSer>();
-
             builder.Services.AddScoped<IAnimalTaskRepository ,AnimalTaskRepository>();
             builder.Services.AddScoped<IAnimalTaskService, AnimalTaskService>();
 

@@ -47,10 +47,6 @@ namespace AnimalCenterAPI.Controllers
         {
         
             var updated = await _animalTaskService.UpdateAnimalTaskAsync(id, dto);
-            //var appTaskExists = await _context.AppTasks.AnyAsync(x => x.Id == dto.AppTaskId);
-            //var animalExists = await _context.Animals.AnyAsync(x => x.Id == dto.AnimalId););
-            //if (!appTaskExists || !animalExists)
-
                 if (!updated)
                 throw new EntityNotFoundException("AnimalTask", $"with ID: {id}");
 

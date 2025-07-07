@@ -31,9 +31,27 @@ namespace AnimalCenterAPI.Services.Implimentations
         {
             return await context.Animals.FindAsync(id);
         }
+    
+
+      public async Task<bool> UpdateAnimalAsync(int id, AnimalUpdateDTO dto)
+        {
+            var animal = await _context.Animals.FindAsync(id);
+            if (animal == null)
+                return false;
+
+            animal.Name = dto.Name;
+            animal.Species = dto.Species;
+            animal.Age = dto.Age;
+            animal.Gender = dto.Gender;
+            animal.Description = dto.Description;
+            animal.Status = dto.Status;
+            animal.UpdatedAt = DateTime.UtcNow;
+
+            await _context.SaveChangesAsync();
+
+            return true;
+        }
     }
-
-
 
 
 }

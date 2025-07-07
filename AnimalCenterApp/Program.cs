@@ -16,6 +16,14 @@ namespace AnimalCenterApp
             builder.Services.AddRazorComponents()
                 .AddInteractiveServerComponents();
 
+            // Register the ApplicationDbContext with dependency injection
+            builder.Services.AddHttpClient("AnimalApi", client =>
+            {
+                client.BaseAddress = new Uri("https://localhost:7212/");
+            });
+
+            builder.Services.AddScoped(sp => sp.GetRequiredService<IHttpClientFactory>().CreateClient("AnimalApi"));
+
             builder.Services.AddCascadingAuthenticationState();
 
             builder.Services.AddAuthentication(options =>
@@ -36,6 +44,8 @@ namespace AnimalCenterApp
                 .AddDefaultTokenProviders();
 
             builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("https://localhost:7212/") });
+            builder.Services.AddScoped(sp =>
+            sp.GetRequiredService<IHttpClientFactory>().CreateClient("AnimalApi"));
 
             // Allow Any Header, Origin, and Method for CORS
             builder.Services.AddCors(options =>
@@ -46,7 +56,13 @@ namespace AnimalCenterApp
                 });
             });
 
-            var app = builder.Build();
+            builder.Services.AddRazorComponents()
+             .AddInteractiveServerComponents();
+            builder.Services.AddControllers();
+
+            var app = builder.Build(); // Move this line up to declare 'app' before its usage.
+
+            app.MapControllers(); // Fix: 'app' is now declared before this line.
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
@@ -60,6 +76,8 @@ namespace AnimalCenterApp
                 app.UseHsts();
             }
 
+            app.UseCors("AllowBlazor");
+
             app.UseHttpsRedirection();
 
             app.UseStaticFiles();
@@ -71,4 +89,6 @@ namespace AnimalCenterApp
             app.Run();
         }
     }
+
+
 }

@@ -12,13 +12,10 @@ namespace AnimalCenterAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AnimalsController(AnimalAppDbContext context,IAnimalService animalService , IAnimalToUpdateSer animalToUpdateSer, IAnimalRepository animalRepository) : ControllerBase
+    public class AnimalsController(AnimalAppDbContext context,IAnimalService animalService, IAnimalRepository animalRepository) : ControllerBase
     {
         private readonly AnimalAppDbContext _context = context;
-    
         private readonly IAnimalService _animalService = animalService;
-
-        private readonly IAnimalToUpdateSer _animalToUpdateSer = animalToUpdateSer;
         private readonly IAnimalRepository _animalRepository = animalRepository;
 
         // GET: api/Animals
@@ -34,8 +31,6 @@ namespace AnimalCenterAPI.Controllers
         {
             var animalDto = await _animalService.GetAnimalByIdAsync(id) ?? throw new EntityNotFoundException("Animal ", $"with ID: {id}");
 
-            
-
             return Ok(animalDto);
         }
 
@@ -44,7 +39,7 @@ namespace AnimalCenterAPI.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutAnimal(int id, AnimalUpdateDTO dto)
         {
-            var success = await _animalToUpdateSer.UpdateAnimalAsync(id, dto);
+            var success = await _animalService.UpdateAnimalAsync(id, dto);
 
             if (!success)
                 throw new EntityNotFoundException("Animal", $"with ID: {id}");
@@ -52,15 +47,16 @@ namespace AnimalCenterAPI.Controllers
             return NoContent();
         }
 
-       
+        // Removed the invalid [FromRoute] attribute from the PostAnimal method parameter
         [HttpPost]
+        
         public async Task<ActionResult<AnimalDTO>> PostAnimal(AnimalDTO animalDto)
         {
-            bool exists = await _context.Animals.AnyAsync(x => x.Id == animalDto.Id); 
+            bool exists = await _context.Animals.AnyAsync(x => x.Id == animalDto.Id);
 
             if (exists)
             {
-                throw new EntityAlreadyExistsException("Animal", $"with Id: {animalDto.Id}"); 
+                throw new EntityAlreadyExistsException("Animal", $"with Id: {animalDto.Id}");
             }
 
             Animal animal = await _animalService.CreateNewAnimalAsync(_animalRepository.AnimalMappper(animalDto));
