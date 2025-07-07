@@ -26,5 +26,15 @@ namespace AnimalCenterAPI.Services.Implimentations
             await _context.SaveChangesAsync();
             return true;
         }
+
+             public async Task<Animal?> GetAnimalByIdAsync(int id)
+        {
+            return await context.Animals.FindAsync(id);
+        }
     }
+
+
+
+
 }
+

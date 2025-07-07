@@ -18,13 +18,11 @@ namespace AnimalCenterAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AnimalTasksController(IAnimalTaskRepository animalTaskRepository , IAnimalTaskService animalTaskService , AnimalAppDbContext context, IGetAnimalTaskByIdSer getAnimalTaskByIdSer , IAnimalTaskToUpdate animalTaskToUpdate) : ControllerBase
+    public class AnimalTasksController(IAnimalTaskRepository animalTaskRepository , IAnimalTaskService animalTaskService , AnimalAppDbContext context) : ControllerBase
     {
         readonly AnimalAppDbContext _context = context ;
-        readonly IAnimalTaskRepository _animalTaskRepository = animalTaskRepository;    
+        readonly IAnimalTaskRepository _animalTaskRepository = animalTaskRepository;
         readonly IAnimalTaskService _animalTaskService = animalTaskService;
-        readonly IGetAnimalTaskByIdSer _getAnimalTaskByIdSer = getAnimalTaskByIdSer;
-        readonly IAnimalTaskToUpdate _animalTaskUpdateService = animalTaskToUpdate;
 
 
 
@@ -39,7 +37,7 @@ namespace AnimalCenterAPI.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<AnimalTask>> GetAnimalTask(int id)
         {
-            var animalTaskDto = await _getAnimalTaskByIdSer.GetAnimalTaskByIdAsync(id) ?? throw new EntityNotFoundException("AnimalTask", $"with ID: {id}");
+            var animalTaskDto = await _animalTaskService.GetAnimalTaskByIdAsync(id) ?? throw new EntityNotFoundException("AnimalTask", $"with ID: {id}");
             return Ok(animalTaskDto);
         }
 
@@ -48,7 +46,7 @@ namespace AnimalCenterAPI.Controllers
         public async Task<IActionResult> PutAnimalTask(int id, AnimalTaskUpdateDto dto)
         {
         
-            var updated = await _animalTaskUpdateService.UpdateAnimalTaskAsync(id, dto);
+            var updated = await _animalTaskService.UpdateAnimalTaskAsync(id, dto);
             //var appTaskExists = await _context.AppTasks.AnyAsync(x => x.Id == dto.AppTaskId);
             //var animalExists = await _context.Animals.AnyAsync(x => x.Id == dto.AnimalId););
             //if (!appTaskExists || !animalExists)
@@ -74,10 +72,17 @@ namespace AnimalCenterAPI.Controllers
             return CreatedAtAction("GetAnimalTask", new { id = animalTask.Id }, animalTask);
         }
 
-
-        private bool AnimalTaskExists(int id)
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteAnimalTask(int id)
         {
-            return _context.AnimalTasks.Any(e => e.Id == id);
+            var deleted = await _animalTaskService.DeleteAsync(id);
+
+            if (!deleted)
+                throw new EntityAlreadyExistsException("User", $"with Id: {id}");
+
+            return NoContent();
         }
+
     }
 }
+

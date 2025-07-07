@@ -12,12 +12,12 @@ namespace AnimalCenterAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AnimalsController(AnimalAppDbContext context,IAnimalService animalService , IGetAnimalByIdSer getAnimalByIdSer, IAnimalToUpdateSer animalToUpdateSer, IAnimalRepository animalRepository) : ControllerBase
+    public class AnimalsController(AnimalAppDbContext context,IAnimalService animalService , IAnimalToUpdateSer animalToUpdateSer, IAnimalRepository animalRepository) : ControllerBase
     {
         private readonly AnimalAppDbContext _context = context;
     
         private readonly IAnimalService _animalService = animalService;
-        private readonly IGetAnimalByIdSer _getAnimalByIdSer = getAnimalByIdSer;
+
         private readonly IAnimalToUpdateSer _animalToUpdateSer = animalToUpdateSer;
         private readonly IAnimalRepository _animalRepository = animalRepository;
 
@@ -32,7 +32,7 @@ namespace AnimalCenterAPI.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Animal>> GetAnimal(int id)
         {
-            var animalDto = await _getAnimalByIdSer.GetAnimalByIdAsync(id) ?? throw new EntityNotFoundException("Animal ", $"with ID: {id}");
+            var animalDto = await _animalService.GetAnimalByIdAsync(id) ?? throw new EntityNotFoundException("Animal ", $"with ID: {id}");
 
             
 
@@ -80,9 +80,6 @@ namespace AnimalCenterAPI.Controllers
             return NoContent();
         }
 
-        private bool AnimalExists(int id)
-        {
-            return _context.Animals.Any(e => e.Id == id);
-        }
+     
     }
 }

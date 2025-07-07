@@ -17,12 +17,12 @@ namespace AnimalCenterAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UsersController(AnimalAppDbContext context, IUserService userService, IUserRepository userRepository, IGetUserByIdSer getUserByIdSer) : ControllerBase
+    public class UsersController(AnimalAppDbContext context, IUserService userService, IUserRepository userRepository) : ControllerBase
     {
         private readonly AnimalAppDbContext _context = context;
         private readonly IUserService _userService = userService;
         private readonly IUserRepository _userRepository = userRepository;
-        private readonly IGetUserByIdSer _getUserByIdSer = getUserByIdSer;
+    
 
         // GET: api/Users
         [HttpGet]
@@ -35,7 +35,7 @@ namespace AnimalCenterAPI.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<User>> GetUser(int id)
         {
-            var UserDto = await _getUserByIdSer.GetUserByIdAsync(id) ?? throw new EntityNotFoundException("User", $"with ID: {id}");
+            var UserDto = await _userService.GetUserByIdAsync(id) ?? throw new EntityNotFoundException("User", $"with ID: {id}");
 
            
 
@@ -57,9 +57,18 @@ namespace AnimalCenterAPI.Controllers
             return CreatedAtAction("GetUser", new { id = user.Id }, user);
         }
 
-        private bool UserExists(int id)
+
+        // DELETE: api/User/5
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteUser(int id)
         {
-            return _context.Users.Any(e => e.Id == id);
+            var deleted = await _userService.DeleteAsync(id);
+
+            if (!deleted)
+                throw new EntityAlreadyExistsException("User", $"with Id: {id}");
+
+            return NoContent();
         }
+
     }
 }

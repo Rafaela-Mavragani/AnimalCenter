@@ -14,10 +14,28 @@ namespace AnimalCenterAPI.Repository.Implimentations
                 AnimalId = animalTaskDto.AnimalId,
                 AppTaskId = animalTaskDto.AppTaskId,
                 IsCompleted = animalTaskDto.IsCompleted,
+            };
+        }
+
+        public AnimalTask AnimalTaskToDelete(AnimalTaskDTO animalTaskDto)
+        {
+            return new AnimalTask
+            {
+                Id = animalTaskDto.Id
+            };
+        }
+
+        public AnimalTask AnimalTaskToUpdateID(AnimalTaskUpdateDto animalTaskToUpdateDto)
+        {
+            return new AnimalTask
+            {
+                AnimalId = animalTaskToUpdateDto.AnimalId,
+                AppTaskId = animalTaskToUpdateDto.AppTaskId,
+                IsCompleted = animalTaskToUpdateDto.IsCompleted
 
             };
         }
+
+
     }
-    
-    
 }

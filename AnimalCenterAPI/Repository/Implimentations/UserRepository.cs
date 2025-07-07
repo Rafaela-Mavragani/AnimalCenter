@@ -10,13 +10,26 @@ namespace AnimalCenterAPI.Repository.Implimentations
         {
             return new User
             {
-                Id = userDTO.Id,
-                Name = userDTO.firstname ?? string.Empty, 
+                
+                Name = userDTO.firstname ?? string.Empty,
                 lastname = userDTO.lastname ?? string.Empty,
-                Email = userDTO.Email ?? string.Empty, 
-                Password = userDTO.Password ?? string.Empty, 
-                UserName = userDTO.UserName ?? string.Empty, 
-                UserRole = userDTO.UserRole ?? default 
+                Email = userDTO.Email ?? string.Empty,
+                Password = userDTO.Password ?? string.Empty,
+                UserName = userDTO.UserName ?? string.Empty,
+                UserRole = userDTO.UserRole ?? default
+            };
+        }
+
+        public User UserById(UserToUpdateDTO userToUpdateDTO)
+        {
+            return new User
+            {
+                Id = userToUpdateDTO.Id,
+                Name = userToUpdateDTO.FirstName ?? string.Empty,
+                lastname = userToUpdateDTO.LastName ?? string.Empty,
+                Email = userToUpdateDTO.Email ?? string.Empty,
+                Password = userToUpdateDTO.Password ?? string.Empty,
+                UserName = userToUpdateDTO.UserName ?? string.Empty
             };
         }
     }

@@ -18,5 +18,31 @@ namespace AnimalCenterAPI.Repository.Implimentations
                 Status = animalDto.Status,
             };
         }
+
+
+        public Animal AnimalToDelete(AnimalDTO animalDto)
+        {
+            return new Animal
+            {
+                Id = animalDto.Id,
+            };
+        }
+
+        public Animal AnimalByID(AnimalToUpdateDTO animalToUpdateDto)
+        {
+            return new Animal
+            {
+                Id = animalToUpdateDto.Id,
+                Name = animalToUpdateDto.Name ?? string.Empty,
+                Species = animalToUpdateDto.Species ?? string.Empty,
+                Age = animalToUpdateDto.Age,
+                Gender = animalToUpdateDto.Gender ?? string.Empty,
+                Description = animalToUpdateDto.Description,
+                Status = animalToUpdateDto.Status,
+                InsertedAt = animalToUpdateDto.InsertedAt,
+                UpdatedAt = animalToUpdateDto.ModifiedAt
+            };
+        }
     }
+    
 }

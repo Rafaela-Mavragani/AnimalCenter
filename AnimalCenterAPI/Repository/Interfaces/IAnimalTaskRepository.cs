@@ -5,6 +5,8 @@ namespace AnimalCenterAPI.Repository.Interfaces
 {
     public interface IAnimalTaskRepository
     {
-        AnimalTask AnimalTaskMappper(AnimalTaskDTO animalTaskDto);
+    AnimalTask AnimalTaskMappper(AnimalTaskDTO animalTaskDto);
+     AnimalTask AnimalTaskToDelete(AnimalTaskDTO animalTaskDto);
+      AnimalTask  AnimalTaskToUpdateID(AnimalTaskUpdateDto animalTaskToUpdateDto);
     }
 }

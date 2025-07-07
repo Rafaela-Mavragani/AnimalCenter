@@ -8,5 +8,6 @@ namespace AnimalCenterAPI.Services.Interfaces
     {
         Task<Animal> CreateNewAnimalAsync(Animal animal);
         Task<bool> DeleteAsync(int id);
+        Task<Animal?> GetAnimalByIdAsync(int id);
     }
 }

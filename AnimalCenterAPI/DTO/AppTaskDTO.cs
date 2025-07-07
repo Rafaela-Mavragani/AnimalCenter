@@ -13,9 +13,11 @@ namespace AnimalCenterAPI.DTO
 
         public string? Description { get; set; }
 
-        [Required]
-        [NotNull]
+ 
         public int UserId { get; set; }
+
+    
+        public int AnimalTaskId { get; set; }
     }
 
 }

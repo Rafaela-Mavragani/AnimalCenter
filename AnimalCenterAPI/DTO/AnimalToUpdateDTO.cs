@@ -1,6 +1,6 @@
 ﻿namespace AnimalCenterAPI.DTO
 {
-    public class AnimalReadOnlyDTO
+    public class AnimalToUpdateDTO
     {
         public int Id { get; set; }
         public string? Name { get; set; }
