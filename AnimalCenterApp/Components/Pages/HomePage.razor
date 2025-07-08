@@ -1,0 +1,42 @@
+﻿@page "/"
+@inject NavigationManager NavigationManager
+
+<div class="d-flex flex-column min-vh-100">
+
+    <!-- Main content -->
+    <div class="container my-auto">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card shadow-lg border-0 mt-5">
+                    <div class="card-body text-center p-5">
+                        <h1 class="display-4 mb-3">🐾 Welcome to Animal Center</h1>
+                        <p class="lead mb-4">
+                            This application helps manage animal care tasks and volunteers in a structured and easy way.
+                        </p>
+
+                        <button class="btn btn-outline-success" @onclick="NavigateToLogin">
+                            🔐&nbsp;&nbsp;Login
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer mt-auto py-3 bg-light border-top">
+        <div class="container text-center">
+            <span class="text-muted">
+                📢 <strong>About:</strong> This is a web application for managing animal center tasks and volunteers effectively.
+            </span>
+        </div>
+    </footer>
+
+</div>
+
+@code {
+    private void NavigateToLogin()
+    {
+        NavigationManager.NavigateTo("/login");
+    }
+}
