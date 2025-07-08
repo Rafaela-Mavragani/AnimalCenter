@@ -3,8 +3,117 @@
 @inject HttpClient Http
 @inject NavigationManager NavigationManager
 
-<h3>UsersForm</h3>
+<h3 class="text-center text-dark mb-4">User Management</h3>
+
+@if (users == null)
+{
+    <p class="text-muted text-center">Loading users...</p>
+}
+else
+{
+    <table class="table table-bordered table-striped">
+        <thead class="table-light">
+            <tr>
+                <th>Username</th>
+                <th>First name</th>
+                <th>Last name</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var user in users)
+            {
+                <tr>
+                    <td>@user.UserName</td>
+                    <td>@user.firstname</td>
+                    <td>@user.lastname</td>
+                    <td>@user.Email</td>
+                    <td>@(user.UserRole == 0 ? "Admin" : "User")</td>
+                    <td>
+                        <button class="btn btn-sm btn-danger" @onclick="() => DeleteUser(user.Id)">🗑 Delete</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+<hr />
+<h4 class="mb-3">Add New User</h4>
+
+<EditForm Model="newUser" OnValidSubmit="AddUser">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="row g-2">
+        <div class="col-md-4">
+            <InputText @bind-Value="newUser.UserName" class="form-control" placeholder="Username" />
+        </div>
+        <div class="col-md-4">
+            <InputText @bind-Value="newUser.firstname" class="form-control" placeholder="First name" />
+        </div>
+        <div class="col-md-4">
+            <InputText @bind-Value="newUser.lastname" class="form-control" placeholder="Last name" />
+        </div>
+        <div class="col-md-6">
+            <InputText @bind-Value="newUser.Email" class="form-control" placeholder="Email" />
+        </div>
+        <div class="col-md-6">
+            <InputText @bind-Value="newUser.Password" class="form-control" placeholder="Password" />
+        </diV>
+    </div>
+    <button class="btn btn-primary mt-3">Save</button>
+</EditForm>
 
 @code {
+    private List<UserDTO>? users;
+    private UserDTO newUser = new();
 
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadUsers();
+    }
+
+    private async Task LoadUsers()
+    {
+        users = await Http.GetFromJsonAsync<List<UserDTO>>("api/users");
+    }
+
+    private async Task AddUser()
+    {
+        var response = await Http.PostAsJsonAsync("api/users", newUser);
+        if (response.IsSuccessStatusCode)
+        {
+            newUser = new UserDTO(); // reset form
+            await LoadUsers(); // refresh list
+        }
+        else
+        {
+            var error = await response.Content.ReadAsStringAsync();
+            Console.WriteLine("❌ Error creating user: " + error);
+        }
+    }
+
+    private async Task DeleteUser(int id)
+    {
+        var confirmed = await JS.InvokeAsync<bool>("confirm", $"Are you sure you want to delete user ID {id}?");
+        if (!confirmed) return;
+
+        var response = await Http.DeleteAsync($"api/users/{id}");
+        if (response.IsSuccessStatusCode)
+        {
+            await LoadUsers();
+        }
+        else
+        {
+            var error = await response.Content.ReadAsStringAsync();
+            Console.WriteLine("❌ Error deleting user: " + error);
+        }
+    }
+
+    [Inject]
+    public IJSRuntime JS { get; set; } = default!;
 }
+

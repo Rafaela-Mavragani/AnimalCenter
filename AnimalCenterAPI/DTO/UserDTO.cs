@@ -27,8 +27,8 @@ namespace AnimalCenterAPI.DTO
                     "one lowercase letter, one digit, and one special character.")]
     public string? Password { get; set; }
 
-    [Required]
-    public UserRole? UserRole { get; set; } 
+        [Required]
+        public UserRole? UserRole { get; set; } = Enums.UserRole.Volunteer;
     
   }
        
