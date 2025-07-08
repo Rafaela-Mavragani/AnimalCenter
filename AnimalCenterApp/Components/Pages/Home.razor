@@ -11,6 +11,7 @@
 }
 else
 {
+   <div class= "p-3 mb-2 bg-info text-dark" >
     <table class="table table-bordered pastel-table">
         <thead class="table-light">
             <tr>
@@ -32,13 +33,17 @@ else
                     <td>@animal.Gender</td>
                     <td>@animal.Status</td>
                     <td>
-                        <button class="btn btn-sm btn-outline-danger" @onclick="() => DeleteAnimal(animal.Id)">Delete </button>
-                        <button class="btn btn-sm btn-outline-danger" @onclick="() => UpdateAnimal(animal.Id)" Update>Update </button>
+                       
+                        <button class="btn btn-outline-secondary btn-sm" @onclick="() => DeleteAnimal(animal.Id)">
+                            Delete
+                        </button>
+                        <button class="btn btn-outline-success btn-sm" @onclick="() => UpdateAnimal(animal.Id)" Update>Update </button>
                     </td>
                 </tr>
             }
         </tbody>
     </table>
+    </div>
 }
 <br />
 <hr class="my-4" />
@@ -47,7 +52,8 @@ else
 <EditForm Model="newAnimal" OnValidSubmit="AddAnimal" FormName="AddAnimalForm">
     <DataAnnotationsValidator />
     <ValidationSummary />
-    <div class="row g-2">
+    <div class="p-3 mb-2 bg-info text-dark">
+    <div class="row g-2 ">
         <div class="col-md-4">
             <InputText @bind-Value="newAnimal.Name" class="form-control" placeholder="Name" />
         </div>
@@ -67,7 +73,8 @@ else
             <InputText @bind-Value="newAnimal.Description" class="form-control" placeholder="Description" />
         </div>
     </div>
-    <button type="submit" class="btn btn-primary mt-3">Save</button>
+    </div>
+    <button type="submit" class="btn btn-outline-success mt-4">Save</button>
 </EditForm>
 
 @code {

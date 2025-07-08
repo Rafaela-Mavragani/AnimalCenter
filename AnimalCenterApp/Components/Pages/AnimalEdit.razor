@@ -14,12 +14,13 @@ else
     <EditForm Model="animal" OnValidSubmit="UpdateAnimal" FormName ="EdidAnimalForm">
         <DataAnnotationsValidator />
         <ValidationSummary />
+        <div class="p-3 mb-2 bg-light text-dark">
         <div class="mb-2">
             <label>Name</label>
             <InputText @bind-Value="animal.Name" class="form-control" />
         </div>
         <div class="mb-2">
-            <label>Specie</label>
+            <label>Species</label>
             <InputText @bind-Value="animal.Species" class="form-control" />
         </div>
         <div class="mb-2">
@@ -27,15 +28,16 @@ else
             <InputNumber @bind-Value="animal.Age" class="form-control" />
         </div>
         <div class="mb-2">
-            <label>Gendet</label>
+            <label>Gender</label>
             <InputText @bind-Value="animal.Gender" class="form-control" />
         </div>
         <div class="mb-2">
             <label>Status</label>
             <InputText @bind-Value="animal.Status" class="form-control" />
         </div>
-      
-        <button class="btn btn-primary">Αποθήκευση</button>
+        </div>
+
+        <button class="btn btn-outline-success btn-sm">Save</button>
     </EditForm>
 }
 

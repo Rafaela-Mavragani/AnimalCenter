@@ -11,6 +11,7 @@
 }
 else
 {
+    <div class="p-3 mb-2 bg-info text-dark"> 
     <table class="table table-bordered table-striped">
         <thead class="table-light">
             <tr>
@@ -32,12 +33,13 @@ else
                     <td>@user.Email</td>
                     <td>@(user.UserRole == 0 ? "Admin" : "User")</td>
                     <td>
-                        <button class="btn btn-sm btn-danger" @onclick="() => DeleteUser(user.Id)">🗑 Delete</button>
+                        <button class="btn btn-outline-secondary btn-sm" @onclick="() => DeleteUser(user.Id)">🗑 Delete</button>
                     </td>
                 </tr>
             }
         </tbody>
     </table>
+    </div>
 }
 
 <hr />
@@ -46,7 +48,7 @@ else
 <EditForm Model="newUser" OnValidSubmit="AddUser">
     <DataAnnotationsValidator />
     <ValidationSummary />
-
+    <div class="p-3 mb-2 bg-info text-dark">
     <div class="row g-2">
         <div class="col-md-4">
             <InputText @bind-Value="newUser.UserName" class="form-control" placeholder="Username" />
@@ -64,7 +66,8 @@ else
             <InputText @bind-Value="newUser.Password" class="form-control" placeholder="Password" />
         </diV>
     </div>
-    <button class="btn btn-primary mt-3">Save</button>
+    </div>
+    <button  class="btn btn-outline-success mt-3">Save</button>
 </EditForm>
 
 @code {
