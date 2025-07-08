@@ -1,0 +1,184 @@
+﻿@page "/animal-tasks"
+@inject HttpClient Http
+@inject IJSRuntime JS
+@using AnimalCenterAPI.DTO
+@rendermode InteractiveServer
+
+<h3 class="mb-4">📘 Animal Tasks Management</h3>
+
+@if (loading)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <table class="table table-striped table-bordered">
+        <thead class="table-light">
+            <tr>
+                <th>ID</th>
+                <th>Animal</th>
+                <th>Task</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var task in animalTasks)
+            {
+                var animalName = animals.FirstOrDefault(a => a.Id == task.AnimalId)?.Name ?? "Unknown";
+                var taskName = appTasks.FirstOrDefault(t => t.Id == task.AppTaskId)?.Name ?? "Unknown";
+
+                <tr>
+                    <td>@task.Id</td>
+                    <td>@animalName</td>
+                    <td>@taskName</td>
+                    <td>@(task.IsCompleted ? "✅ Done" : "⏳ Pending")</td>
+                    <td>
+                        <button class="btn btn-sm btn-warning" @onclick="() => EditTask(task)">✏️ Edit</button>
+                        <button class="btn btn-sm btn-danger" @onclick="() => DeleteTask(task.Id)">🗑️ Delete</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+<hr />
+<h4>@(isEdit ? "Edit Task" : "Create New Task")</h4>
+
+<EditForm Model="taskModel" OnValidSubmit="SaveTask">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="mb-3">
+        <label>Animal</label>
+        <InputSelect @bind-Value="taskModel.AnimalId" class="form-select">
+            <option value="">-- Select Animal --</option>
+            @foreach (var animal in animals)
+            {
+                <option value="@animal.Id">@animal.Name</option>
+            }
+        </InputSelect>
+    </div>
+
+    <div class="mb-3">
+        <label>Task</label>
+        <InputSelect @bind-Value="taskModel.AppTaskId" class="form-select">
+            <option value="">-- Select Task --</option>
+            @foreach (var task in appTasks)
+            {
+                <option value="@task.Id">@task.Name</option>
+            }
+        </InputSelect>
+    </div>
+
+    <div class="form-check mb-3">
+        <InputCheckbox @bind-Value="taskModel.IsCompleted" class="form-check-input" />
+        <label class="form-check-label">Completed</label>
+    </div>
+
+    <button class="btn btn-success">@((isEdit ? "Update" : "Create"))</button>
+    @if (isEdit)
+    {
+        <button class="btn btn-secondary ms-2" @onclick="CancelEdit">Cancel</button>
+    }
+</EditForm>
+
+@if (!string.IsNullOrEmpty(message))
+{
+    <div class="alert alert-info mt-3">@message</div>
+}
+
+@code {
+    private List<AnimalTaskDTO> animalTasks = new();
+    private List<AnimalDTO> animals = new();
+    private List<AppTaskDTO> appTasks = new();
+    private AnimalTaskDTO taskModel = new();
+    private bool loading = true;
+    private bool isEdit = false;
+    private string? message;
+
+    protected override async Task OnInitializedAsync()
+    {
+        loading = true;
+        animals = await Http.GetFromJsonAsync<List<AnimalDTO>>("api/animals") ?? new();
+        appTasks = await Http.GetFromJsonAsync<List<AppTaskDTO>>("api/apptasks") ?? new();
+        await LoadTasks();
+        loading = false;
+    }
+
+    private async Task LoadTasks()
+    {
+        animalTasks = await Http.GetFromJsonAsync<List<AnimalTaskDTO>>("api/animaltasks") ?? new();
+    }
+
+    private async Task SaveTask()
+    {
+        HttpResponseMessage response;
+
+        if (isEdit)
+        {
+            var updateDto = new AnimalTaskUpdateDto
+            {
+                AnimalId = taskModel.AnimalId,
+                AppTaskId = taskModel.AppTaskId,
+                IsCompleted = taskModel.IsCompleted
+            };
+
+            response = await Http.PutAsJsonAsync($"api/animaltasks/{taskModel.Id}", updateDto);
+        }
+        else
+        {
+            response = await Http.PostAsJsonAsync("api/animaltasks", taskModel);
+        }
+
+        if (response.IsSuccessStatusCode)
+        {
+            message = isEdit ? "✅ Task updated." : "✅ Task created.";
+            taskModel = new();
+            isEdit = false;
+            await LoadTasks();
+        }
+        else
+        {
+            var error = await response.Content.ReadAsStringAsync();
+            message = $"❌ Failed: {error}";
+        }
+    }
+
+    private void EditTask(AnimalTaskDTO task)
+    {
+        taskModel = new AnimalTaskDTO
+        {
+            Id = task.Id,
+            AnimalId = task.AnimalId,
+            AppTaskId = task.AppTaskId,
+            IsCompleted = task.IsCompleted
+        };
+        isEdit = true;
+    }
+
+    private async Task DeleteTask(int id)
+    {
+        var confirm = await JS.InvokeAsync<bool>("confirm", $"Delete task #{id}?");
+        if (!confirm) return;
+
+        var response = await Http.DeleteAsync($"api/animaltasks/{id}");
+        if (response.IsSuccessStatusCode)
+        {
+            message = "✅ Task deleted.";
+            await LoadTasks();
+        }
+        else
+        {
+            message = "❌ Could not delete task.";
+        }
+    }
+
+    private void CancelEdit()
+    {
+        taskModel = new();
+        isEdit = false;
+        message = null;
+    }
+}

@@ -14,7 +14,8 @@ namespace AnimalCenterAPI.Repository.Implimentations
                 Id = AppTaskDTO.Id,
                 Name = AppTaskDTO.Name ?? string.Empty,
                 Description = AppTaskDTO.Description ?? string.Empty,
-                UserId = AppTaskDTO.UserId
+                UserId = AppTaskDTO.UserId,
+                AnimalTaskId = AppTaskDTO.AnimalTaskId
             };
 
         }
@@ -27,7 +28,8 @@ namespace AnimalCenterAPI.Repository.Implimentations
 
                 Name = AppTaskToUpDateDTO.Name ?? string.Empty,
                 Description = AppTaskToUpDateDTO.Description ?? string.Empty,
-                UserId = AppTaskToUpDateDTO.UserId
+                UserId = AppTaskToUpDateDTO.UserId,
+                AnimalTaskId = AppTaskToUpDateDTO.AnimalTaskId,
             };
         }
         public AppTask AppTaskToDelete(AppTaskDTO AppTaskDto)

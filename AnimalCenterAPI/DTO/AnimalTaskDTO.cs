@@ -9,8 +9,6 @@ namespace AnimalCenterAPI.DTO
         public int Id { get; set; }
        
         public int AnimalId { get; set; }
-
-      
         public int AppTaskId { get; set; }
 
         public bool IsCompleted { get; set; } = false;

@@ -45,7 +45,11 @@ namespace AnimalCenterAPI.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutAnimalTask(int id, AnimalTaskUpdateDto dto)
         {
-        
+            if (!_context.Animals.Any(a => a.Id == dto.AnimalId) || !_context.AppTasks.Any(t => t.Id == dto.AppTaskId))
+            {
+                return BadRequest("Invalid AnimalId or AppTaskId");
+            }
+
             var updated = await _animalTaskService.UpdateAnimalTaskAsync(id, dto);
                 if (!updated)
                 throw new EntityNotFoundException("AnimalTask", $"with ID: {id}");
