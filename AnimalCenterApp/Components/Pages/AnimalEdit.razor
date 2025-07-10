@@ -63,7 +63,7 @@ else
         var response = await Http.PutAsJsonAsync($"api/animals/{id}", animal);
         if (response.IsSuccessStatusCode)
         {
-            NavigationManager.NavigateTo("/");
+            NavigationManager.NavigateTo("/animals");
         }
         else
         {
