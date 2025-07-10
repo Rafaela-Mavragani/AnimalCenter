@@ -1,0 +1,156 @@
+﻿@page "/app-tasks"
+@inject HttpClient Http
+@using AnimalCenterAPI.DTO
+@using System.Net.Http.Json
+
+<h3>📋 App Task Management</h3>
+
+@if (loading)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <table class="table table-bordered table-striped">
+        <thead class="table-light">
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var task in appTasks)
+            {
+                <tr>
+                    <td>@task.Id</td>
+                    <td>@task.Name</td>
+                    <td>@task.Description</td>
+                    <td>
+                        <button class="btn btn-sm btn-warning" @onclick="() => EditTask(task)">✏️ Edit</button>
+                        <button class="btn btn-sm btn-danger" @onclick="() => DeleteTask(task.Id)">🗑️ Delete</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+<hr />
+<h4>@(isEdit ? "Edit Task" : "Create New Task")</h4>
+
+<EditForm Model="taskModel" OnValidSubmit="SaveTask" FormName="AppTasks" >
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="mb-3">
+        <label>Name</label>
+        <InputText @bind-Value="taskModel.Name" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label>Description</label>
+        <InputTextArea @bind-Value="taskModel.Description" class="form-control" />
+    </div>
+
+    <button class="btn btn-success">@((isEdit ? "Update" : "Create"))</button>
+    @if (isEdit)
+    {
+        <button class="btn btn-secondary ms-2" @onclick="CancelEdit">Cancel</button>
+    }
+</EditForm>
+
+@if (!string.IsNullOrEmpty(message))
+{
+    <div class="alert alert-info mt-3">@message</div>
+}
+
+@code {
+    private List<AppTaskDTO> appTasks = new();
+    private AppTaskDTO taskModel = new();
+    private bool isEdit = false;
+    private string? message;
+    private bool loading = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadTasks();
+    }
+
+    private async Task LoadTasks()
+    {
+        loading = true;
+        appTasks = await Http.GetFromJsonAsync<List<AppTaskDTO>>("api/apptasks") ?? new();
+        loading = false;
+    }
+
+    private async Task SaveTask()
+    {
+        HttpResponseMessage response;
+        if (isEdit)
+        {
+            var updateDto = new AppTaskUpdateDTO
+            {
+                Name = taskModel.Name,
+                Description = taskModel.Description
+            };
+            response = await Http.PutAsJsonAsync($"api/apptasks/{taskModel.Id}", updateDto);
+        }
+        else
+        {
+            response = await Http.PostAsJsonAsync("api/apptasks", taskModel);
+        }
+
+        if (response.IsSuccessStatusCode)
+        {
+            message = isEdit ? "✅ Task updated." : "✅ Task created.";
+            taskModel = new();
+            isEdit = false;
+            await LoadTasks();
+        }
+        else
+        {
+            var error = await response.Content.ReadAsStringAsync();
+            message = $"❌ Failed: {error}";
+        }
+    }
+
+    private void EditTask(AppTaskDTO task)
+    {
+        taskModel = new AppTaskDTO
+        {
+            Id = task.Id,
+            Name = task.Name,
+            Description = task.Description
+        };
+        isEdit = true;
+    }
+
+    private async Task DeleteTask(int id)
+    {
+        var confirmed = await JS.InvokeAsync<bool>("confirm", $"Delete task #{id}?");
+        if (!confirmed) return;
+
+        var response = await Http.DeleteAsync($"api/apptasks/{id}");
+        if (response.IsSuccessStatusCode)
+        {
+            message = "✅ Task deleted.";
+            await LoadTasks();
+        }
+        else
+        {
+            message = "❌ Failed to delete.";
+        }
+    }
+
+    private void CancelEdit()
+    {
+        taskModel = new();
+        isEdit = false;
+        message = null;
+    }
+
+    [Inject]
+    public IJSRuntime JS { get; set; } = default!;
+}
