@@ -1,0 +1,53 @@
+﻿@page "/login"
+@using AnimalCenterAPI.DTO
+@inject NavigationManager NavigationManager
+@rendermode InteractiveServer
+@inject HttpClient Http
+
+<h3 class="mt-4 text-center">🔐 Welcome to AnimalCenter</h3>
+
+<div class="container mt-5" style="max-width: 400px;">
+    <EditForm Model="loginModel" OnValidSubmit="LoginUser">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+
+        <div class="mb-3">
+            <label>Email</label>
+            <InputText @bind-Value="loginModel.Email" class="form-control" placeholder="Enter your email" />
+        </div>
+
+        <div class="mb-3">
+            <label>Password</label>
+            <InputText @bind-Value="loginModel.Password" type="password" class="form-control" placeholder="Enter your password" />
+        </div>
+
+        <button class="btn btn-primary w-100">Log In</button>
+    </EditForm>
+
+    @if (!string.IsNullOrEmpty(message))
+    {
+        <div class="alert alert-info mt-3 text-center">@message</div>
+    }
+</div>
+
+@code {
+    private LoginDTO loginModel = new();
+    private string? message;
+
+    private async Task LoginUser()
+    {
+        // 🔐 Fake success message (mock login logic)
+        message = $"✅ Logged in as {loginModel.Email} (UI only)";
+
+        // ❗ Real implementation would call backend API for authentication
+        // NavigationManager.NavigateTo("/dashboard");
+    }
+
+    public class LoginDTO
+    {
+       
+        public string Email { get; set; } = string.Empty;
+
+        public string Password { get; set; } = string.Empty;
+    }
+}
