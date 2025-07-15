@@ -5,7 +5,6 @@ namespace AnimalCenterAPI.DTO
 {
     public class AnimalTaskDTO
     {
-       
         public int Id { get; set; }
        
         public int AnimalId { get; set; }
