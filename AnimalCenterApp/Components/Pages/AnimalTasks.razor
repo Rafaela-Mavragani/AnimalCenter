@@ -10,95 +10,111 @@
     }
 </style>
 
-<h3 class="mb-4">Animal Tasks Management</h3>
+<AuthorizeView>
+    <Authorized Context="authContext">
+        <h3 class="mb-4">Animal Tasks Management</h3>
 
-@if (loading)
-{
-    <p>Loading...</p>
-}
-else
-{
-    <div class=" p-3 mb-2 bg-info text-dark">
-    <table class="table table-striped table-bordered">
-        <thead class="table-light">
-            <tr>
-                <th>ID</th>
-                <th>Animal</th>
-                <th>Task</th>
-                <th>Status</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var task in animalTasks)
-            {
-                var animalName = animals.FirstOrDefault(a => a.Id == task.AnimalId)?.Name ?? "Unknown";
-                var taskName = appTasks.FirstOrDefault(t => t.Id == task.AppTaskId)?.Name ?? "Unknown";
+        @if (loading)
+        {
+            <p>Loading...</p>
+        }
+        else
+        {
+            <div class=" p-3 mb-2 bg-info text-dark">
+                <table class="table table-striped table-bordered">
+                    <thead class="table-light">
+                        <tr>
+                            <th>ID</th>
+                            <th>Animal</th>
+                            <th>Task</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var task in animalTasks)
+                        {
+                            var animalName = animals.FirstOrDefault(a => a.Id == task.AnimalId)?.Name ?? "Unknown";
+                            var taskName = appTasks.FirstOrDefault(t => t.Id == task.AppTaskId)?.Name ?? "Unknown";
 
-                <tr>
-                    <td>@task.Id</td>
-                    <td>@animalName</td>
-                    <td>@taskName</td>
-                    <td>@(task.IsCompleted ? "✅ Done" : "⏳ Pending")</td>
-                    <td>
-                        <button class="btn btn-outline-success" @onclick="() => EditTask(task)">✏️ Edit</button>
-                        <button class="btn btn-sm btn-danger" @onclick="() => DeleteTask(task.Id)">🗑️ Delete</button>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
-    </div>
-}
+                            <tr>
+                                <td>@task.Id</td>
+                                <td>@animalName</td>
+                                <td>@taskName</td>
+                                <td>@(task.IsCompleted ? "✅ Done" : "⏳ Pending")</td>
+                                <td>
+                                    <button class="btn btn-outline-success" @onclick="() => EditTask(task)">✏️ Edit</button>
+                                    <button class="btn btn-sm btn-danger" @onclick="() => DeleteTask(task.Id)">🗑️ Delete</button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
 
-<hr />
-<h4>@(isEdit ? "Edit Task" : "Create New Task")</h4>
+        <hr />
+        <h4>@(isEdit ? "Edit Task" : "Create New Task")</h4>
 
-<EditForm Model="taskModel" OnValidSubmit="SaveTask">
-    <DataAnnotationsValidator />
-    <ValidationSummary />
-    <div class=" p-3 mb-2 bg-info text-dark ">
-    <div class="mb-3">
-        <label>Animal</label>
-        <InputSelect @bind-Value="taskModel.AnimalId" class="form-select">
-            <option value="">-- Select Animal --</option>
-            @foreach (var animal in animals)
-            {
-                <option value="@animal.Id">@animal.Name</option>
-            }
-        </InputSelect>
-    </div>
+        <EditForm Model="taskModel" OnValidSubmit="SaveTask" Context="formContext">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+            <div class=" p-3 mb-2 bg-info text-dark ">
+                <div class="mb-3">
+                    <label>Animal</label>
+                    <InputSelect @bind-Value="taskModel.AnimalId" class="form-select">
+                        <option value="">-- Select Animal --</option>
+                        @foreach (var animal in animals)
+                        {
+                            <option value="@animal.Id">@animal.Name</option>
+                        }
+                    </InputSelect>
+                </div>
 
-    <div class="mb-3">
-        <label>Task</label>
-        <InputSelect @bind-Value="taskModel.AppTaskId" class="form-select">
-            <option value="">-- Select Task --</option>
-            @foreach (var task in appTasks)
-            {
-                <option value="@task.Id">@task.Name</option>
-            }
-        </InputSelect>
-    </div>
+                <div class="mb-3">
+                    <label>Task</label>
+                    <InputSelect @bind-Value="taskModel.AppTaskId" class="form-select">
+                        <option value="">-- Select Task --</option>
+                        @foreach (var task in appTasks)
+                        {
+                            <option value="@task.Id">@task.Name</option>
+                        }
+                    </InputSelect>
+                </div>
 
-    <div class="form-check mb-3">
-        <InputCheckbox @bind-Value="taskModel.IsCompleted" class="form-check-input" />
-        <label class="form-check-label">Completed</label>
-    </div>
-   
-    <button class="btn btn-outline-success">@((isEdit ? "Update" : "Create"))</button>
-    @if (isEdit)
-    {
-            <button class="btn btn-outline-secondary ms-2" @onclick="CancelEdit">Cancel</button>
+                <div class="form-check mb-3">
+                    <InputCheckbox @bind-Value="taskModel.IsCompleted" class="form-check-input" />
+                    <label class="form-check-label">Completed</label>
+                </div>
 
-      
-    }
-    </div>
-</EditForm>
+                <button class="btn btn-outline-success">@((isEdit ? "Update" : "Create"))</button>
+                @if (isEdit)
+                {
+                    <button class="btn btn-outline-secondary ms-2" @onclick="CancelEdit">Cancel</button>
+                }
+            </div>
+        </EditForm>
 
-@if (!string.IsNullOrEmpty(message))
-{
-    <div class="alert alert-info mt-3">@message</div>
-}
+        @if (!string.IsNullOrEmpty(message))
+        {
+            <div class="alert alert-info mt-3">@message</div>
+        }
+
+    </Authorized>
+    <NotAuthorized>
+        <p>Not logged in</p>
+    </NotAuthorized>
+</AuthorizeView>
+
+<AuthorizeView Roles="Admin">
+    <Authorized Context="adminContext">
+        <h3>Admin Dashboard</h3>
+        <p>Welcome, Admin! You have access to this because you are an administrator.</p>
+    </Authorized>
+    <NotAuthorized>
+        <p>You do not have the Admin Role.</p>
+    </NotAuthorized>
+</AuthorizeView>
 
 @code {
     private List<AnimalTaskDTO> animalTasks = new();

@@ -1,5 +1,6 @@
 ﻿@implements IDisposable
 @inject NavigationManager NavigationManager
+@rendermode InteractiveServer
 
 <div class="top-row ps-3 navbar navbar-dark">
     <div class="container-fluid">
@@ -15,43 +16,35 @@
                 <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Home
             </NavLink>
         </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="/users">
-                <i class="bi bi-airplane-engines-fill"></i><span aria-hidden="true"></span> Users
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-        <NavLink class="nav-link" href="/animal-tasks">
-            <i class="bi bi-airplane-engines-fill"></i><span aria-hidden="true"></span> Animals tasks
-            </NavLink>
-            <div class="nav-item px-3">
-                <NavLink class="nav-link" href="/animals">
-                    <i class="bi bi-airplane-engines-fill"></i><span aria-hidden="true"></span> Animals 
-                </NavLink>
-                </div>
-            <div class="nav-item px-3">
-                <NavLink class="nav-link" href="/app-tasks">
-                    <i class="bi bi-airplane-engines-fill"></i><span aria-hidden="true"></span> Users tasks
-                </NavLink>
-            </div>
-            <div class="nav-item px-3">
-                <NavLink class="nav-link" href="/login">
-                    <i class="bi bi-airplane-engines-fill"></i><span aria-hidden="true"></span>Login
-                </NavLink>
-            </div>
-
-</div>
-
         <AuthorizeView>
             <Authorized>
                 <div class="nav-item px-3">
-                    <NavLink class="nav-link" href="/manolis/efi/love4ever">
-                        <i class="bi bi-airplane-engines-fill"></i><span aria-hidden="true"></span> API
+                    <NavLink class="nav-link" href="/users">
+                        <i class="bi bi-airplane-engines-fill"></i><span aria-hidden="true"></span> Users
                     </NavLink>
+                </div>
+                <div class="nav-item px-3">
+                    <NavLink class="nav-link" href="/animal-tasks">
+                        <i class="bi bi-airplane-engines-fill"></i><span aria-hidden="true"></span> Animals tasks
+                    </NavLink>
+                    <div class="nav-item px-3">
+                        <NavLink class="nav-link" href="/animals">
+                            <i class="bi bi-airplane-engines-fill"></i><span aria-hidden="true"></span> Animals
+                        </NavLink>
+                    </div>
+                    <div class="nav-item px-3">
+                        <NavLink class="nav-link" href="/app-tasks">
+                            <i class="bi bi-airplane-engines-fill"></i><span aria-hidden="true"></span> Users tasks
+                        </NavLink>
+                    </div>
                 </div>
             </Authorized>
         </AuthorizeView>
-
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="/login">
+                <i class="bi bi-airplane-engines-fill"></i><span aria-hidden="true"></span>Login
+            </NavLink>
+        </div>
     </nav>
 </div>
 
