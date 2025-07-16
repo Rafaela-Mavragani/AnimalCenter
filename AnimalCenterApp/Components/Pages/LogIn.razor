@@ -1,6 +1,7 @@
 ﻿@page "/login"
-@using AnimalCenterAPI.DTO
 @inject NavigationManager NavigationManager
+@inject IAuthService AuthService
+@inject IAuthDataService AuthDataService
 @rendermode InteractiveServer
 @inject HttpClient Http
 
@@ -10,50 +11,127 @@
     }
 </style>
 
-<h3 class="mt-4 text-center">🔐 Welcome to AnimalCenter</h3>
+<div class="text-center w-100 m-2 text-black-50">
+    <h2>Blazor 8 Auth</h2>
+</div>
 
-<div class="container mt-5" style="max-width: 400px;">
-    <EditForm Model="loginModel" OnValidSubmit="LoginUser">
-        <DataAnnotationsValidator />
-        <ValidationSummary />
+<p>Login as admin@acme.com with any password to login with Admin role.</p>
+<p>Login as super@acme.com with any password to login with Super role.</p>
 
-        <div class="mb-3">
-            <label>Email</label>
-            <InputText @bind-Value="loginModel.Email" class="form-control" placeholder="Enter your email" />
-        </div>
+<div class="card">
+    <div class="card-body">
+        <h5 class="card-title">Please enter your login details</h5>
+        <EditForm Model="loginModel" OnValidSubmit="HandleLogin">
+            <DataAnnotationsValidator />
 
-        <div class="mb-3">
-            <label>Password</label>
-            <InputText @bind-Value="loginModel.Password" type="password" class="form-control" placeholder="Enter your password" />
-        </div>
-
-        <button class="btn btn-primary w-100">Log In</button>
-    </EditForm>
-
-    @if (!string.IsNullOrEmpty(message))
-    {
-        <div class="alert alert-info mt-3 text-center">@message</div>
-    }
+            <div class="form-group">
+                <label for="email">User Name</label>
+                <InputText Id="email" @ref="@inputTextFocus" class="form-control" @bind-Value="loginModel.UserName" />
+                <ValidationMessage For="@(() => loginModel.UserName)" />
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <InputText Id="password" type="@passwordType" class="form-control" @bind-Value="loginModel.Password" />
+                <ValidationMessage For="@(() => loginModel.Password)" />
+            </div>
+            <div class="form-group">
+                <input id="showPassword" type="checkbox" checked="@showPassword" @oninput="@HandlePassword" />
+                <label for="showPassword">Show Password</label>
+            </div>
+            <h6 class="warning login-error text-center" style="display: @DisplayError">@errorMessage</h6>
+            <div class="w-100 text-center">
+                <button type="submit" class="btn btn-primary">Log In</button>
+            </div>
+        </EditForm>
+    </div>
 </div>
 
 @code {
     private LoginDTO loginModel = new();
     private string? message;
+     
+    protected string DisplayError { get; set; } = "none;";
+    public bool showPassword { get; set; }
+    public string? passwordType { get; set; }
+    public string errorMessage { get; set; }
+    protected InputText? inputTextFocus;
+    string returnUrl;
 
-    private async Task LoginUser()
+    protected override void OnInitialized()
     {
-        // 🔐 Fake success message (mock login logic)
-        message = $"✅ Logged in as {loginModel.Email} (UI only)";
-
-        // ❗ Real implementation would call backend API for authentication
-        // NavigationManager.NavigateTo("/dashboard");
+        passwordType = "password";
+        showPassword = false;
     }
 
-    public class LoginDTO
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-       
-        public string Email { get; set; } = string.Empty;
+        //Parse the query string for the return URL, so we can go there after login
+        if (String.IsNullOrEmpty(returnUrl))
+        {
+            var uri = NavigationManager.ToAbsoluteUri(NavigationManager.Uri);
+            if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("returnUrl", out var url))
+            {
+                returnUrl = url;
+            }
+        }
 
-        public string Password { get; set; } = string.Empty;
+        //A hard reset was performed or the session was lost, try to restore the state and redirect back to the returnUrl
+        if (firstRender && !AuthService.IsLoggedIn)
+        {
+            var restoredFromState = await AuthService.GetStateFromTokenAsync();
+            if (restoredFromState)
+            {
+                if (!string.IsNullOrEmpty(returnUrl))
+                {
+                    NavigationManager.NavigateTo(returnUrl);
+                    returnUrl = string.Empty;
+                }
+            }
+        }
+    }
+
+    protected void HandlePassword()
+    {
+        if (showPassword)
+        {
+            passwordType = "password";
+            showPassword = false;
+        }
+        else
+        {
+            passwordType = "text";
+            showPassword = true;
+        }
+    }
+
+    protected async Task HandleLogin()
+    {
+        var loginResult = AuthDataService.Login(loginModel.UserName, loginModel.Password);
+
+        if (!loginResult.Success)
+        {
+            errorMessage = loginResult.Message;
+            DisplayError = "block;";
+
+            if (inputTextFocus.Element != null)
+            {
+                await inputTextFocus.Element.Value.FocusAsync();
+            }
+        }
+        else
+        {
+            await AuthService.Login(loginResult.Data);
+
+            if (!string.IsNullOrEmpty(returnUrl))
+            {
+                NavigationManager.NavigateTo(returnUrl);
+                returnUrl = string.Empty;
+            }
+            else
+            {
+                NavigationManager.NavigateTo("/animal-tasks");
+            }
+        }
+
     }
 }

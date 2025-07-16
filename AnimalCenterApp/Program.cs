@@ -1,5 +1,9 @@
 using AnimalCenterApp.Components;
 using AnimalCenterApp.Data;
+using AnimalCenterApp.Helpers;
+using AnimalCenterApp.Services;
+using Blazored.SessionStorage;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -15,6 +19,24 @@ namespace AnimalCenterApp
             // Add services to the container.
             builder.Services.AddRazorComponents()
                 .AddInteractiveServerComponents();
+
+            //Authentication
+            builder.Services.AddAuthorization();
+
+            builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+            .AddCookie(options =>
+            {
+                options.Cookie.Name = "auth_cookie";
+                options.Cookie.MaxAge = TimeSpan.FromHours(24);
+            });
+
+            builder.Services.AddScoped<IAuthService, AuthService>();
+            builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthStateProvider>();
+            builder.Services.AddCascadingAuthenticationState();
+
+            builder.Services.AddScoped<IAuthDataService, AuthDataService>();
+            builder.Services.AddBlazoredSessionStorage();
+            builder.Services.AddScoped<ICustomSessionService, CustomSessionService>();
 
             // Register the ApplicationDbContext with dependency injection
             builder.Services.AddHttpClient("AnimalApi", client =>
