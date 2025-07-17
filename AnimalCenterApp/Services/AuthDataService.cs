@@ -1,39 +1,71 @@
 ﻿using AnimalCenterAPI.DTO;
 using AnimalCenterAPI.Enums;
 using AnimalCenterApp.Helpers;
-using System.Data;
 using System.Security.Claims;
+using System.Net.Http.Json;
 
 namespace AnimalCenterApp.Services
 {
     public class AuthDataService : IAuthDataService
     {
-        private static readonly Dictionary<string, UserDTO> Users = new()
-        {
-            { "admin@acme.com", new UserDTO { UserName = "admin@acme.com", UserRole = UserRole.Admin } },
-            { "super@acme.com", new UserDTO { UserName = "super@acme.com", UserRole = UserRole.Volunteer } }
-        };
+        private readonly HttpClient _http;
 
-        public ServiceResponse<ClaimsPrincipal> Login(string userName, string password)
+        public AuthDataService(HttpClient http)
         {
-            if (!Users.ContainsKey(userName))
+            _http = http;
+        }
+
+        ServiceResponse<ClaimsPrincipal> IAuthDataService.Login(string userName, string password)
+        {
+            if (string.IsNullOrWhiteSpace(userName) || string.IsNullOrWhiteSpace(password))
             {
-                return new ServiceResponse<ClaimsPrincipal>(
-                    "Unknown user, please enter super@acme.com or admin@acme.com");
+                return new ServiceResponse<ClaimsPrincipal>("Username and password are required.");
             }
 
-            var user = Users[userName];
-
-            var claims = new List<Claim>
+            var loginDto = new LoginDTO
             {
-                new Claim(ClaimTypes.Name, user.UserName!),
-                new Claim(ClaimTypes.Role, user.UserRole.ToString()!)
+                UserName = userName,
+                Password = password
             };
 
-            var identity = new ClaimsIdentity(claims, "jwt");
-            var principal = new ClaimsPrincipal(identity);
+            try
+            {
+                var responseTask = _http.PostAsJsonAsync("api/auth/login", loginDto);
+                responseTask.Wait();
+                var response = responseTask.Result;
 
-            return new ServiceResponse<ClaimsPrincipal>("Login successful", true, principal);
+                if (!response.IsSuccessStatusCode)
+                {
+                    var errorTask = response.Content.ReadAsStringAsync();
+                    errorTask.Wait();
+                    var error = errorTask.Result;
+                    return new ServiceResponse<ClaimsPrincipal>($"❌ Login failed: {error}");
+                }
+
+                var userTask = response.Content.ReadFromJsonAsync<UserDTO>();
+                userTask.Wait();
+                var user = userTask.Result;
+
+                if (user is null || string.IsNullOrWhiteSpace(user.UserName))
+                {
+                    return new ServiceResponse<ClaimsPrincipal>("Invalid response from server.");
+                }
+
+                var claims = new List<Claim>
+                    {
+                        new Claim(ClaimTypes.Name, user.UserName!),
+                        new Claim(ClaimTypes.Role, user.UserRole.ToString()!)
+                    };
+
+                var identity = new ClaimsIdentity(claims, "jwt");
+                var principal = new ClaimsPrincipal(identity);
+
+                return new ServiceResponse<ClaimsPrincipal>("✅ Login successful", true, principal);
+            }
+            catch (Exception ex)
+            {
+                return new ServiceResponse<ClaimsPrincipal>($"❌ Login request failed: {ex.Message}");
+            }
         }
     }
 }
