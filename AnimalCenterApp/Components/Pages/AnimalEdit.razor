@@ -9,45 +9,54 @@
     }
 </style>
 
-<h3>✏️ Edit Animal</h3>
+<AuthorizeView Roles="Admin">
+    <Authorized Context="adminContext">
+        <h3>✏️ Edit Animal</h3>
 
-@if (animal == null)
-{
-    <p>Loading...</p>
-}
-else
-{
-    <EditForm Model="animal" OnValidSubmit="UpdateAnimal" FormName ="EdidAnimalForm">
-        <DataAnnotationsValidator />
-        <ValidationSummary />
-        <div class="p-3 mb-2 bg-light text-dark">
-        <div class="mb-2">
-            <label>Name</label>
-            <InputText @bind-Value="animal.Name" class="form-control" />
-        </div>
-        <div class="mb-2">
-            <label>Species</label>
-            <InputText @bind-Value="animal.Species" class="form-control" />
-        </div>
-        <div class="mb-2">
-            <label>Age</label>
-            <InputNumber @bind-Value="animal.Age" class="form-control" />
-        </div>
-        <div class="mb-2">
-            <label>Gender</label>
-            <InputText @bind-Value="animal.Gender" class="form-control" />
-        </div>
-        <div class="mb-2">
-            <label>Status</label>
-            <InputText @bind-Value="animal.Status" class="form-control" />
-        </div>
-        </div>
+        @if (animal == null)
+        {
+            <p>Loading...</p>
+        }
+        else
+        {
+            <EditForm Model="animal" OnValidSubmit="UpdateAnimal">
+                <DataAnnotationsValidator />
+                <ValidationSummary />
+                <div class="p-3 mb-2 bg-light text-dark">
+                    <div class="mb-2">
+                        <label>Name</label>
+                        <InputText @bind-Value="animal.Name" class="form-control" />
+                    </div>
+                    <div class="mb-2">
+                        <label>Species</label>
+                        <InputText @bind-Value="animal.Species" class="form-control" />
+                    </div>
+                    <div class="mb-2">
+                        <label>Age</label>
+                        <InputNumber @bind-Value="animal.Age" class="form-control" />
+                    </div>
+                    <div class="mb-2">
+                        <label>Gender</label>
+                        <InputText @bind-Value="animal.Gender" class="form-control" />
+                    </div>
+                    <div class="mb-2">
+                        <label>Status</label>
+                        <InputText @bind-Value="animal.Status" class="form-control" />
+                    </div>
+                </div>
 
-        <button class="btn btn-outline-success btn-sm">Save</button>
-    </EditForm>
-}
+                <button class="btn btn-outline-success btn-sm">Save</button>
+            </EditForm>
+        }
+    </Authorized>
 
-@code {
+    <NotAuthorized>
+        <p>Not authorized in</p>
+    </NotAuthorized>
+</AuthorizeView>
+
+
+ @code {
     [Parameter]
     public int id { get; set; }
 
@@ -55,19 +64,21 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        animal = await Http.GetFromJsonAsync<AnimalUpdateDTO>($"api/animals/{id}");
+            animal = await Http.GetFromJsonAsync<AnimalUpdateDTO>($"api/animals/{id}");
     }
 
     private async Task UpdateAnimal()
     {
-        var response = await Http.PutAsJsonAsync($"api/animals/{id}", animal);
-        if (response.IsSuccessStatusCode)
-        {
-            NavigationManager.NavigateTo("/animals");
-        }
-        else
-        {
-            Console.WriteLine("❌ Error updating animal");
-        }
+            var response = await Http.PutAsJsonAsync($"api/animals/{id}", animal);
+            if (response.IsSuccessStatusCode)
+            {
+                NavigationManager.NavigateTo("/animals");
+            }
+            else
+            {
+                Console.WriteLine("❌ Error updating animal");
+            }
     }
 }
+        
+

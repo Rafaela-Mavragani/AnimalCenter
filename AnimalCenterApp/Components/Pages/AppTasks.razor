@@ -10,6 +10,9 @@
     }
 </style>
 
+<AuthorizeView >
+ <Authorized Context="adminContext">
+
 <h3 class="mb-4">📋 App Task Management</h3>
 
 @if (loading)
@@ -79,6 +82,12 @@ else
         <button class="btn btn-success">Create</button>
     </div>
 </EditForm>
+    </Authorized>
+
+    <NotAuthorized>
+        <p>Not authorized in</p>
+    </NotAuthorized>
+</AuthorizeView>
 
 @if (!string.IsNullOrEmpty(message))
 {
