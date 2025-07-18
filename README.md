@@ -49,3 +49,23 @@ DTO/	Data Transfer Objects
 Controllers/	API endpoints
 Services/	Business logic layer
 Repository/	Data access layer
+
+
+---
+
+## ⚙️ Setup Instructions
+
+ 1. Clone the repository
+ 2. Open the solution
+ 3. Set Startup Projects:
+    Make sure both projects run together:
+    Right-click on the solution > Set Startup Projects...
+    Choose Multiple startup projects
+    Set both AnimalCenterAPI and AnimalCenterApp to Start
+   4. Create the database
+   5. Configure connection string
+   6. Apply EF Core migrations
+   7. Run the application
+-------
+Admin is harcoded on  AnimalAppDbContext
+
