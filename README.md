@@ -24,7 +24,7 @@ AnimalCenterApp is a Blazor Server application designed for managing tasks, volu
     ✅ Modern UI with pastel color palette
 
     ✅ Responsive Layout and accessible interface
-
+----
 🛠️ Technologies Used
 
     .NET 8 Blazor Server
