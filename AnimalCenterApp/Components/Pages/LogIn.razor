@@ -11,12 +11,6 @@
     }
 </style>
 
-<div class="text-center w-100 m-2 text-black-50">
-    <h2>Blazor 8 Auth</h2>
-</div>
-
-<p>Login as admin@acme.com with any password to login with Admin role.</p>
-<p>Login as super@acme.com with any password to login with Super role.</p>
 
 <div class="card">
     <div class="card-body">
@@ -65,7 +59,7 @@
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        //Parse the query string for the return URL, so we can go there after login
+       
         if (String.IsNullOrEmpty(returnUrl))
         {
             var uri = NavigationManager.ToAbsoluteUri(NavigationManager.Uri);
@@ -75,7 +69,7 @@
             }
         }
 
-        //A hard reset was performed or the session was lost, try to restore the state and redirect back to the returnUrl
+     
         if (firstRender && !AuthService.IsLoggedIn)
         {
             var restoredFromState = await AuthService.GetStateFromTokenAsync();
