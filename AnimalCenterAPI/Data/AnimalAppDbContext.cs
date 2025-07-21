@@ -8,7 +8,6 @@ namespace AnimalCenterAPI.Data
         public DbSet<User> Users { get; set; }
         public DbSet<AppTask> AppTasks { get; set; }
         public DbSet<Animal> Animals { get; set; }
-      
         public DbSet<AnimalTask> AnimalTasks { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

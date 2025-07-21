@@ -9,6 +9,5 @@
         public int AppTaskId { get; set; } 
         public bool IsCompleted { get; set; } = false;
 
-
-    }
+     }
 }
