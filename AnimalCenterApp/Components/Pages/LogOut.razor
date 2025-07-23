@@ -8,11 +8,43 @@
     body {
         background-color: #b3e5fc;
     }
+
+    .logout-container {
+        max-width: 500px;
+        margin: 100px auto;
+        padding: 30px;
+        background-color: #ffffff;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        text-align: center;
+    }
+
+    .logout-title {
+        font-size: 28px;
+        font-weight: bold;
+        color: #0077b6;
+        margin-bottom: 20px;
+    }
+
+    .logout-button {
+        background-color: #0077b6;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        font-size: 16px;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+        .logout-button:hover {
+            background-color: #005f8c;
+        }
 </style>
 
-<h1>Log out</h1>
-
-<button class="btn btn-primary" @onclick="LogoutClicked">Log Out</button>
+<div class="logout-container">
+    <div class="logout-title">Are you sure you want to log out?</div>
+    <button class="logout-button" @onclick="LogoutClicked">🔓 Log Out</button>
+</div>
 
 @code {
     private async Task LogoutClicked()
@@ -22,6 +54,6 @@
             await AuthService.LogoutAsync();
         }
 
-        NavigationManager.NavigateTo("/"); 
+        NavigationManager.NavigateTo("/");
     }
 }
