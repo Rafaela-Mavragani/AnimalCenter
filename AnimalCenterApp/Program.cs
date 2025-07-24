@@ -38,7 +38,7 @@ namespace AnimalCenterApp
             builder.Services.AddBlazoredSessionStorage();
             builder.Services.AddScoped<ICustomSessionService, CustomSessionService>();
 
-            // Register the ApplicationDbContext with dependency injection
+            
             builder.Services.AddHttpClient("AnimalApi", client =>
             {
                 client.BaseAddress = new Uri("https://localhost:7212/");
@@ -82,11 +82,11 @@ namespace AnimalCenterApp
              .AddInteractiveServerComponents();
             builder.Services.AddControllers();
 
-            var app = builder.Build(); // Move this line up to declare 'app' before its usage.
+            var app = builder.Build(); 
 
-            app.MapControllers(); // Fix: 'app' is now declared before this line.
+            app.MapControllers(); 
 
-            // Configure the HTTP request pipeline.
+           
             if (app.Environment.IsDevelopment())
             {
                 app.UseMigrationsEndPoint();
