@@ -17,21 +17,12 @@
                 <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Home
             </NavLink>
         </div>
+
         <AuthorizeView Roles="Admin">
             <Authorized>
                 <div class="nav-item px-3">
                     <NavLink class="nav-link" href="/users">
                         <i class="bi bi-airplane-engines-fill"></i><span aria-hidden="true"></span> Users
-                    </NavLink>
-                </div>
-                <div class="nav-item px-3">
-                    <NavLink class="nav-link" href="/animal-tasks">
-                        <i class="bi bi-airplane-engines-fill"></i><span aria-hidden="true"></span> Animals tasks
-                    </NavLink>
-                </div>
-                <div class="nav-item px-3">
-                    <NavLink class="nav-link" href="/animals">
-                        <i class="bi bi-airplane-engines-fill"></i><span aria-hidden="true"></span> Animals
                     </NavLink>
                 </div>
                 <div class="nav-item px-3">
@@ -41,18 +32,33 @@
                 </div>
             </Authorized>
         </AuthorizeView>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="/login">
-                <i class="bi bi-airplane-engines-fill"></i><span aria-hidden="true"></span>Login
-            </NavLink>
-        </div>
+
+        @if (!AuthService.IsLoggedIn)
+        {
+            <div class="nav-item px-3">
+                <NavLink class="nav-link" href="/login">
+                    <i class="bi bi-airplane-engines-fill"></i><span aria-hidden="true"></span> Login
+                </NavLink>
+            </div>
+        }
+
         @if (AuthService.IsLoggedIn)
         {
             <div class="nav-item px-3">
                 <NavLink class="nav-link" href="/logout">
-                <i class="bi bi-airplane-engines-fill"></i><span aria-hidden="true"></span>Logout
-            </NavLink>
-        </div>
+                    <i class="bi bi-airplane-engines-fill"></i><span aria-hidden="true"></span> Logout
+                </NavLink>
+            </div>
+            <div class="nav-item px-3">
+                <NavLink class="nav-link" href="/animals">
+                    <i class="bi bi-airplane-engines-fill"></i><span aria-hidden="true"></span> Animals
+                </NavLink>
+            </div>
+            <div class="nav-item px-3">
+                <NavLink class="nav-link" href="/animal-tasks">
+                    <i class="bi bi-airplane-engines-fill"></i><span aria-hidden="true"></span> Animals tasks
+                </NavLink>
+            </div>
         }
     </nav>
 </div>
@@ -77,4 +83,3 @@
         NavigationManager.LocationChanged -= OnLocationChanged;
     }
 }
-
