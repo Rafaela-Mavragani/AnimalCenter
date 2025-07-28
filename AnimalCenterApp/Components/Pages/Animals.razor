@@ -38,13 +38,19 @@ else
                     <td>@animal.Age</td>
                     <td>@animal.Gender</td>
                     <td>@animal.Status</td>
-                    <td>
-                       
-                        <button class="btn btn-outline-secondary btn-sm" @onclick="() => DeleteAnimal(animal.Id)">
-                            Delete
-                        </button>
-                        <button class="btn btn-outline-success btn-sm" @onclick="() => UpdateAnimal(animal.Id)" Update>Update </button>
-                    </td>
+                        <td>
+                            <AuthorizeView Roles="Admin">
+                                <Authorized Context="adminButtons">
+                                    <button class="btn btn-outline-secondary btn-sm" @onclick="() => DeleteAnimal(animal.Id)">
+                                        Delete
+                                    </button>
+                                    <button class="btn btn-outline-success btn-sm" @onclick="() => UpdateAnimal(animal.Id)">
+                                        Update
+                                    </button>
+                                </Authorized>
+                            </AuthorizeView>
+                        </td>
+
                 </tr>
             }
         </tbody>
@@ -52,6 +58,9 @@ else
     </div>
 }
 <br />
+
+<AuthorizeView Roles="Admin">
+    <Authorized Context="adminEditAnimal">
 <hr class="my-4" />
 <h4 class="mb-3">Add New Animal</h4>
 
@@ -82,6 +91,9 @@ else
     </div>
     <button type="submit" class="btn btn-outline-success mt-4">Save</button>
 </EditForm>
+    </Authorized>
+</AuthorizeView>
+
 
 @code {
     private List<AnimalDTO>? animals;
