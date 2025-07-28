@@ -101,20 +101,8 @@
         }
 
     </Authorized>
-    <NotAuthorized>
-        <p>Not logged in</p>
-    </NotAuthorized>
 </AuthorizeView>
 
-<AuthorizeView Roles="Admin">
-    <Authorized Context="adminContext">
-        <h3>Admin Dashboard</h3>
-        <p>Welcome, Admin! You have access to this because you are an administrator.</p>
-    </Authorized>
-    <NotAuthorized>
-        <p>You do not have the Admin Role.</p>
-    </NotAuthorized>
-</AuthorizeView>
 
 @code {
     private List<AnimalTaskDTO> animalTasks = new();
