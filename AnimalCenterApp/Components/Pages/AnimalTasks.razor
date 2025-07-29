@@ -10,8 +10,8 @@
     }
 </style>
 
-  <AuthorizeView>
-  <Authorized Context="authContext">
+<AuthorizeView>
+    <Authorized Context="authContext">
         <h3 class="mb-4">Animal Tasks Management</h3>
 
         @if (loading)
@@ -20,12 +20,11 @@
         }
         else
         {
-            <div class=" p-3 mb-2 bg-info text-dark">
+            <div class="p-3 mb-2 bg-info text-dark">
                 <table class="table table-striped table-bordered">
                     <thead class="table-light">
                         <tr>
-                            <th>ID</th>
-                            <th>Animal</th>
+                            <th>Animal</th> 
                             <th>Task</th>
                             <th>Status</th>
                             <th>Actions</th>
@@ -38,8 +37,7 @@
                             var taskName = appTasks.FirstOrDefault(t => t.Id == task.AppTaskId)?.Name ?? "Unknown";
 
                             <tr>
-                                <td>@task.Id</td>
-                                <td>@animalName</td>
+                                <td>@animalName</td> 
                                 <td>@taskName</td>
                                 <td>@(task.IsCompleted ? "✅ Done" : "⏳ Pending")</td>
                                 <td>
@@ -59,7 +57,7 @@
         <EditForm Model="taskModel" OnValidSubmit="SaveTask" Context="formContext">
             <DataAnnotationsValidator />
             <ValidationSummary />
-            <div class=" p-3 mb-2 bg-info text-dark ">
+            <div class="p-3 mb-2 bg-info text-dark">
                 <div class="mb-3">
                     <label>Animal</label>
                     <InputSelect @bind-Value="taskModel.AnimalId" class="form-select">
@@ -102,7 +100,6 @@
 
     </Authorized>
 </AuthorizeView>
-
 
 @code {
     private List<AnimalTaskDTO> animalTasks = new();
@@ -175,18 +172,30 @@
 
     private async Task DeleteTask(int id)
     {
-        var confirm = await JS.InvokeAsync<bool>("confirm", $"Delete task #{id}?");
+        var task = animalTasks.FirstOrDefault(t => t.Id == id);
+        if (task == null)
+        {
+            message = "⚠️ Task not found.";
+            return;
+        }
+
+        var animalName = animals.FirstOrDefault(a => a.Id == task.AnimalId)?.Name ?? "Unknown Animal";
+        var taskName = appTasks.FirstOrDefault(t => t.Id == task.AppTaskId)?.Name ?? "Unknown Task";
+
+        var confirmMessage = $"Είσαι σίγουρος ότι θέλεις να διαγράψεις την εργασία \"{taskName}\" για το ζώο \"{animalName}\";";
+        var confirm = await JS.InvokeAsync<bool>("confirm", confirmMessage);
+
         if (!confirm) return;
 
         var response = await Http.DeleteAsync($"api/animaltasks/{id}");
         if (response.IsSuccessStatusCode)
         {
-            message = "✅ Task deleted.";
+            message = "✅ Η εργασία διαγράφηκε.";
             await LoadTasks();
         }
         else
         {
-            message = "❌ Could not delete task.";
+            message = "❌ Αποτυχία διαγραφής.";
         }
     }
 
