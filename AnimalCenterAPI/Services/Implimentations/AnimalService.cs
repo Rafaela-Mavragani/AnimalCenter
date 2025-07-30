@@ -32,7 +32,6 @@ namespace AnimalCenterAPI.Services.Implimentations
             return await context.Animals.FindAsync(id);
         }
     
-
       public async Task<bool> UpdateAnimalAsync(int id, AnimalUpdateDTO dto)
         {
             var animal = await _context.Animals.FindAsync(id);
@@ -52,7 +51,5 @@ namespace AnimalCenterAPI.Services.Implimentations
             return true;
         }
     }
-
-
 }
 

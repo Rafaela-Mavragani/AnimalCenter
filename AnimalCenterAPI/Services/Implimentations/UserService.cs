@@ -20,7 +20,6 @@ namespace AnimalCenterAPI.Services.Implimentations
             return user;
         }
 
-
         public async Task<bool> DeleteAsync(int id)
         {
             var user = await _context.Users.FindAsync(id);
