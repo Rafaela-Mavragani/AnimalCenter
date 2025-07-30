@@ -16,7 +16,6 @@ namespace AnimalCenterAPI
             // Read the connection string
             var connectionString = configuration.GetConnectionString("DefaultConnection");
 
-
             var optionsBuilder = new DbContextOptionsBuilder<AnimalAppDbContext>();
             optionsBuilder.UseSqlServer(connectionString);
 
