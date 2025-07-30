@@ -8,6 +8,5 @@ namespace AnimalCenterAPI.Repository.Interfaces
         AppTask AppTaskMappper(AppTaskDTO AppTaskDTO);
         AppTask AppTask(AppTaskUpdateDTO AppTaskToUpDateDTO);
         AppTask AppTaskToDelete(AppTaskDTO AppTaskDto);
-      
     }
 }

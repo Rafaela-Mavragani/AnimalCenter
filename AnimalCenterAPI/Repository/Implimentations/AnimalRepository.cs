@@ -18,8 +18,6 @@ namespace AnimalCenterAPI.Repository.Implimentations
                 Status = animalDto.Status,
             };
         }
-
-
         public Animal AnimalToDelete(AnimalDTO animalDto)
         {
             return new Animal

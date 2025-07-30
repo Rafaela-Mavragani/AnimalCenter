@@ -10,7 +10,6 @@ namespace AnimalCenterAPI.DTO
         public string Gender { get; set; } = null!;
         public string? Description { get; set; }
         public string? Status { get; set; }
-       
-
+      
     }
 }

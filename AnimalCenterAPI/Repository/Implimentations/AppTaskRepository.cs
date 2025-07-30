@@ -19,8 +19,6 @@ namespace AnimalCenterAPI.Repository.Implimentations
             };
 
         }
-
-
         public AppTask AppTask(AppTaskUpdateDTO AppTaskToUpDateDTO)
         {
             return new AppTask
@@ -39,9 +37,6 @@ namespace AnimalCenterAPI.Repository.Implimentations
                 Id = AppTaskDto.Id
             };
         }
-
-
-
 
     }
 }
